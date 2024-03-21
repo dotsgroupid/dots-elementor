@@ -87,20 +87,55 @@ if ( ! function_exists( 'dots_elementor_scripts_styles' ) ) {
 	{
 		wp_enqueue_style( 'dots-elementor-style', get_stylesheet_uri(), [], '1.0', 'all' );
 		wp_enqueue_style( 'dots-elementor-theme', get_parent_theme_file_uri('assets/css/theme.css'), [], '1.0', 'all' );
+
+		wp_dequeue_style('wp-block-library');
+		wp_dequeue_style('wp-block-library-theme');
+		wp_dequeue_style('global-styles');
+		wp_dequeue_style('classic-theme-styles');
 	}
 }
 add_action( 'wp_enqueue_scripts', 'dots_elementor_scripts_styles' );
 
+// Register Elementor Locations.
+if ( ! function_exists( 'dots_elementor_register_elementor_locations' ) ) {
+	function dots_elementor_register_elementor_locations( $elementor_theme_manager ) {
+		if ( apply_filters( 'dots_elementor_register_elementor_locations', true ) ) {
+			$elementor_theme_manager->register_all_core_location();
+		}
+	}
+}
+add_action( 'elementor/theme/register_locations', 'dots_elementor_register_elementor_locations' );
+
 // Set default content width.
 if ( ! function_exists( 'dots_elementor_content_width' ) ) {
-	function dots_elementor_content_width()
-	{
+	function dots_elementor_content_width() {
 		$GLOBALS['content_width'] = apply_filters( 'dots_elementor_content_width', 800 );
 	}
 }
 add_action( 'after_setup_theme', 'dots_elementor_content_width', 0 );
 
+// Add description meta tag with excerpt text.
+if ( ! function_exists( 'dots_elementor_add_description_meta_tag' ) ) {
+	function dots_elementor_add_description_meta_tag() {
+		if ( ! is_singular() ) {
+			return;
+		}
+
+		$post = get_queried_object();
+		if ( empty( $post->post_excerpt ) ) {
+			return;
+		}
+
+		echo '<meta name="description" content="' . esc_attr( wp_strip_all_tags( $post->post_excerpt ) ) . '">' . "\n";
+	}
+}
+add_action( 'wp_head', 'dots_elementor_add_description_meta_tag' );
+
 // Admin notice for Elementor Plugins.
 if ( is_admin() ) {
 	require get_template_directory() . '/includes/elementor-functions.php';
 }
+
+// Disable Gutenberg
+add_filter( 'use_block_editor_for_post', '__return_false' );
+add_filter( 'use_widgets_block_editor', '__return_false' );

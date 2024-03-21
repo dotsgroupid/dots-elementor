@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Custom elementor functions for notice about the plugin is not activated.
+ * Custom functions for notice about the elementor plugin is not activated.
  *
  * @package DOTS. Elementor
  * @since 1.0
