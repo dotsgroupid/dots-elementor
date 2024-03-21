@@ -50,6 +50,8 @@ if ( ! function_exists( 'dots_elementor_setup' ) ) {
 			'html5',
 			[
 				'search-form',
+				'comment-form',
+				'comment-list',
 				'gallery',
 				'caption',
 				'script',
