@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Custom functions for notice about the elementor plugin is not activated.
+ * Custom functions for Elementor Plugin.
  *
  * @package DOTS. Elementor
  * @since 1.0
@@ -37,7 +37,7 @@ function dots_elementor_fail_load_admin_notice() {
 		$button_text = esc_html__( 'Activate Elementor', 'dots-elementor' );
 		$button_link = wp_nonce_url( 'plugins.php?action=activate&amp;plugin=' . $plugin . '&amp;plugin_status=all&amp;paged=1&amp;s', 'activate-plugin_' . $plugin );
 	} else {
-		if (!current_user_can('install_plugins')) {
+		if ( ! current_user_can( 'install_plugins' ) ) {
 			return;
 		}
 
@@ -144,11 +144,7 @@ function dots_elementor_fail_load_admin_notice() {
 <?php
 }
 
-/**
- * Set dismissed admin notice as viewed.
- *
- * @return void
- */
+// Set dismissed admin notice as viewed.
 function ajax_dots_elementor_set_admin_notice_viewed() {
 	check_ajax_referer( 'dots_elementor_dismiss_install_notice', 'dismiss_nonce' );
 
