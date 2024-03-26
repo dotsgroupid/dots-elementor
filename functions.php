@@ -11,7 +11,7 @@
 
 // Set the content width based on the theme's design and stylesheet
 if ( ! isset( $content_width ) ) {
-	$content_width = 1320;
+	$content_width = 1136;
 }
 
 /**
@@ -138,13 +138,13 @@ add_action( 'wp_head', 'dots_elementor_add_description_meta_tag' );
 
 // Admin notice for several plugins.
 if ( is_admin() ) {
+	require get_template_directory() . '/includes/admin-functions.php';
+
 	// Elementor
 	require get_template_directory() . '/includes/elementor-functions.php';
 
 	// WooCommerce
-	require get_template_directory() . '/includes/woocommerce-functions.php';
+	if ( class_exists( 'woocommerce' ) ) {
+		require get_template_directory() . '/includes/woocommerce-functions.php';
+	}
 }
-
-// Disable Gutenberg
-add_filter( 'use_block_editor_for_post', '__return_false' );
-add_filter( 'use_widgets_block_editor', '__return_false' );
