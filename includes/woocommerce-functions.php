@@ -9,15 +9,18 @@
 
 // Register Product Brand taxonomies.
 function dots_register_product_brand() {
+	$shop_page_id = wc_get_page_id( 'shop' );
+
 	register_taxonomy(
 		'product_brand',
 		array( 'product' ),
 		apply_filters(
 			'dots_taxonomy_args_product_brand',
 			array(
+				'hierarchical'          => false,
 				'update_count_callback' => '_wc_term_recount',
-				'label' => __( 'Brands', 'dots-elementor' ),
-				'labels' => array(
+				'label'                 => __( 'Brands', 'dots-elementor'),
+				'labels'                => array(
 					'name'                  => __( 'Product brands', 'dots-elementor' ),
 					'singular_name'         => __( 'Brand', 'dots-elementor' ),
 					'menu_name'             => _x( 'Brands', 'Admin menu name', 'dots-elementor' ),
@@ -31,24 +34,24 @@ function dots_register_product_brand() {
 					'item_link'             => __( 'Product Brand Link', 'dots-elementor' ),
 					'item_link_description' => __( 'A link to a product brand.', 'dots-elementor' ),
 				),
-				'public' => true,
-				'show_in_rest' => true,
-				'show_ui' => true,
-				'query_var' => true,
-				'capabilities' => array(
+				'show_in_rest'          => true,
+				'show_ui'               => true,
+				'query_var'             => true,
+				'capabilities'          => array(
 					'manage_terms' => 'manage_product_terms',
 					'edit_terms'   => 'edit_product_terms',
 					'delete_terms' => 'delete_product_terms',
 					'assign_terms' => 'assign_product_terms',
 				),
-				'rewrite' => array(
-					'slug'         => 'brand',
+				'rewrite'               => array(
+					'slug'         => get_page_uri( $shop_page_id ),
 					'with_front'   => true,
 					'hierarchical' => false,
 				),
 			),
 		),
 	);
+	register_taxonomy_for_object_type( 'product_brand', 'product' );
 }
 add_action( 'init', 'dots_register_product_brand' );
 
@@ -68,107 +71,23 @@ function dots_updated_term_messages( $messages ) {
 }
 add_filter( 'term_updated_messages', 'dots_updated_term_messages' );
 
-/**
- * Enqueue styles and scripts.
- */
+// Enqueue styles and scripts.
 function dots_admin_styles_scripts() {
-	$screen       = get_current_screen();
-	$screen_id    = $screen ? $screen->id : '';
+	$screen    = get_current_screen();
+	$screen_id = $screen ? $screen->id : '';
 
-	// Edit product brand pages.
+	wp_enqueue_style( 'dots-admin-style', get_parent_theme_file_uri('assets/css/admin.css'), [], '1.0' );
+
 	if ( in_array( $screen_id, array( 'edit-product_brand' ) ) ) {
 		wp_enqueue_media();
 	}
 }
 add_action( 'admin_enqueue_scripts', 'dots_admin_styles_scripts' );
 
-// Adds meta_box_cb callback arguments for custom metabox.
-function dots_add_metabox_args( $args ) {
-	/**
-	 * DOTS_Meta_Box_Product_Brands Class.
-	 */
-	class DOTS_Meta_Box_Product_Brands {
-
-		/**
-		 * Output the metabox.
-		 *
-		 * @param WP_Post $post Current post object.
-		 * @param array   $box {
-		 *     brands meta box arguments.
-		 *
-		 *     @type string   $id       Meta box 'id' attribute.
-		 *     @type string   $title    Meta box title.
-		 *     @type callable $callback Meta box display callback.
-		 *     @type array    $args {
-		 *         Extra meta box arguments.
-		 *
-		 *         @type string $taxonomy Taxonomy. Default 'brand'.
-		 *     }
-		 * }
-		 */
-		public static function output( $post, $box ) {
-			$defaults = array( 'taxonomy' => 'category' );
-
-			if ( ! isset( $box['args'] ) || ! is_array( $box['args'] ) ) {
-				$args = array();
-			} else {
-				$args = $box['args'];
-			}
-
-			$parsed_args	= wp_parse_args( $args, $defaults );
-			$tax_name		= $parsed_args['taxonomy'];
-			$taxonomy		= get_taxonomy( $parsed_args['taxonomy'] );
-			?>
-			<div id="taxonomy-<?php echo $tax_name; ?>" class="categorydiv">
-				<ul id="<?php echo $tax_name; ?>-tabs" class="category-tabs">
-					<li class="tabs">
-						<a href="#<?php echo $tax_name; ?>-all"><?php echo $taxonomy->labels->all_items; ?></a>
-					</li>
-					<li class="hide-if-no-js">
-						<a href="#<?php echo $tax_name; ?>-pop"><?php echo esc_html( $taxonomy->labels->most_used ); ?></a>
-					</li>
-				</ul>
-
-				<div id="<?php echo $tax_name; ?>-pop" class="tabs-panel" style="display: none;">
-					<ul id="<?php echo $tax_name; ?>checklist-pop" class="categorychecklist form-no-clear">
-						<?php $popular_ids = wp_popular_terms_checklist( $tax_name ); ?>
-					</ul>
-				</div>
-
-				<div id="<?php echo $tax_name; ?>-all" class="tabs-panel">
-					<?php
-						$name = ( 'category' === $tax_name ) ? 'post_category' : 'tax_input[' . $tax_name . ']';
-						// Allows for an empty term set to be sent. 0 is an invalid term ID and will be ignored by empty() checks.
-						echo "<input type='hidden' name='{$name}[]' value='0' />";
-					?>
-					<ul id="<?php echo $tax_name; ?>checklist" data-wp-lists="list:<?php echo $tax_name; ?>" class="categorychecklist form-no-clear">
-						<?php
-							wp_terms_checklist(
-								$post->ID,
-								array(
-									'taxonomy'     => $tax_name,
-									'popular_cats' => $popular_ids,
-								),
-							);
-						?>
-					</ul>
-				</div>
-			</div>
-			<?php
-		}
-	}
-
-	if ( ! isset( $args['meta_box_cb'] ) ) {
-		$args['meta_box_cb']          = 'DOTS_Meta_Box_Product_Brands::output';
-		$args['meta_box_sanitize_cb'] = 'taxonomy_meta_box_sanitize_cb_checkboxes';
-	}
-	return $args;
-}
-add_filter( 'dots_taxonomy_args_product_brand', 'dots_add_metabox_args' );
-
-// Brand logo fields.
-function dots_add_brand_fields() {
+// Add product brand logo fields.
+function dots_product_brand_add_fields() {
 ?>
+
 	<div class="form-field term-logo-wrap">
 		<label><?php esc_html_e( 'Logo', 'dots-elementor' ); ?></label>
 		<div id="product_brand_logo" style="float: left; margin-right: 10px;">
@@ -180,26 +99,22 @@ function dots_add_brand_fields() {
 			<button type="button" class="remove_logo_button button"><?php esc_html_e( 'Remove logo', 'dots-elementor' ); ?></button>
 		</div>
 		<script type="text/javascript">
-			// Only show the "remove logo" button when needed
 			if ( ! jQuery( '#product_brand_logo_id' ).val() ) {
 				jQuery( '.remove_logo_button' ).hide();
 			}
 
-			// Uploading files
 			var file_frame;
 
 			jQuery( document ).on( 'click', '.upload_logo_button', function( event ) {
 
 				event.preventDefault();
 
-				// If the media frame already exists, reopen it.
 				if ( file_frame ) {
 					file_frame.open();
 
 					return;
 				}
 
-				// Create the media frame.
 				file_frame = wp.media.frames.downloadable_file = wp.media({
 					title: '<?php esc_html_e( 'Choose an logo', 'dots-elementor' ); ?>',
 					button: {
@@ -208,7 +123,6 @@ function dots_add_brand_fields() {
 					multiple: false,
 				});
 
-				// When an logo is selected, run a callback.
 				file_frame.on( 'select', function() {
 					var attachment = file_frame.state().get( 'selection' ).first().toJSON();
 					var attachment_logo = attachment.sizes.logo || attachment.sizes.full;
@@ -218,7 +132,6 @@ function dots_add_brand_fields() {
 					jQuery( '.remove_logo_button' ).show();
 				});
 
-				// Finally, open the modal.
 				file_frame.open();
 			});
 
@@ -239,7 +152,6 @@ function dots_add_brand_fields() {
 						return;
 					}
 
-					// Clear Logo fields on submit
 					jQuery( '#product_brand_logo' ).find( 'img' ).attr( 'src', '<?php echo esc_js(wc_placeholder_img_src()); ?>' );
 					jQuery( '#product_brand_logo_id' ).val( '' );
 					jQuery( '.remove_logo_button' ).hide();
@@ -250,12 +162,13 @@ function dots_add_brand_fields() {
 		</script>
 		<div class="clear"></div>
 	</div>
+
 <?php
 }
-add_action( 'product_brand_add_form_fields', 'dots_add_brand_fields' );
+add_action( 'product_brand_add_form_fields', 'dots_product_brand_add_fields', 10, 2 );
 
-// Edit brand logo field.
-function dots_edit_brand_fields( $term ) {
+// Edit product brand logo fields.
+function dots_product_brand_edit_fields( $term ) {
 	$logo_id = absint(get_term_meta( $term->term_id, 'logo_id', true ) );
 
 	if ( $logo_id ) {
@@ -263,7 +176,8 @@ function dots_edit_brand_fields( $term ) {
 	} else {
 		$logo = wc_placeholder_img_src();
 	}
-?>
+	?>
+
 	<tr class="form-field term-logo-wrap">
 		<th scope="row" valign="top">
 			<label><?php esc_html_e( 'Logo', 'dots-elementor' ); ?></label>
@@ -278,26 +192,22 @@ function dots_edit_brand_fields( $term ) {
 				<button type="button" class="remove_logo_button button"><?php esc_html_e( 'Remove logo', 'dots-elementor' ); ?></button>
 			</div>
 			<script type="text/javascript">
-				// Only show the "remove logo" button when needed
 				if ( '0' === jQuery( '#product_brand_logo_id' ).val()) {
 					jQuery( '.remove_logo_button' ).hide();
 				}
 
-				// Uploading files
 				var file_frame;
 
 				jQuery( document ).on( 'click', '.upload_logo_button', function( event ) {
 
 					event.preventDefault();
 
-					// If the media frame already exists, reopen it.
 					if ( file_frame ) {
 						file_frame.open();
 
 						return;
 					}
 
-					// Create the media frame.
 					file_frame = wp.media.frames.downloadable_file = wp.media({
 						title: '<?php esc_html_e( 'Choose an logo', 'dots-elementor' ); ?>',
 						button: {
@@ -306,7 +216,6 @@ function dots_edit_brand_fields( $term ) {
 						multiple: false,
 					});
 
-					// When an logo is selected, run a callback.
 					file_frame.on( 'select', function() {
 						var attachment = file_frame.state().get( 'selection' ).first().toJSON();
 						var attachment_logo = attachment.sizes.logo || attachment.sizes.full;
@@ -316,7 +225,6 @@ function dots_edit_brand_fields( $term ) {
 						jQuery( '.remove_logo_button' ).show();
 					});
 
-					// Finally, open the modal.
 					file_frame.open();
 				});
 
@@ -331,19 +239,21 @@ function dots_edit_brand_fields( $term ) {
 			<div class="clear"></div>
 		</td>
 	</tr>
-<?php
-}
-add_action( 'product_brand_edit_form_fields', 'dots_edit_brand_fields', 10 );
 
-// Save brand fields
-function dost_save_brand_fields( $term_id, $tt_id = '', $taxonomy = '' ) {
-	if ( isset( $_POST['product_brand_logo_id'] ) && 'product_brand' === $taxonomy ) { // WPCS: CSRF ok, input var ok.
-		update_term_meta( $term_id, 'logo_id', absint( $_POST['product_brand_logo_id'] ) ); // WPCS: CSRF ok, input var ok.
+	<?php
+}
+add_action( 'product_brand_edit_form_fields', 'dots_product_brand_edit_fields', 10 );
+
+// Save product brand fields.
+function dost_product_brand_save_fields( $term_id, $tt_id = '', $taxonomy = '' ) {
+	if ( isset( $_POST['product_brand_logo_id'] ) && 'product_brand' === $taxonomy ) {
+		update_term_meta( $term_id, 'logo_id', absint( $_POST['product_brand_logo_id'] ) );
 	}
 }
-add_action( 'created_term', 'dost_save_brand_fields', 10, 3 );
+add_action( 'created_term', 'dost_product_brand_save_fields', 10, 3 );
+add_action( 'edit_term', 'dost_product_brand_save_fields', 10, 3 );
 
-// Logo column added to brand admin.
+// Add product brand logo column added to brands admin.
 function dots_product_brand_columns( $columns ) {
 	$new_columns = array();
 
@@ -352,16 +262,16 @@ function dots_product_brand_columns( $columns ) {
 		unset( $columns['cb'] );
 	}
 
-	$new_columns['thumb'] = __( 'Logo', 'dots-elementor' );
+	$new_columns['logo'] = __( 'Logo', 'dots-elementor' );
 	$columns = array_merge( $new_columns, $columns );
 
 	return $columns;
 }
 add_filter( 'manage_edit-product_brand_columns', 'dots_product_brand_columns' );
 
-// Logo column value added to brand admin.
+// Add product brand logo column value added to brands admin.
 function dots_product_brand_column( $columns, $column, $id ) {
-	if ( 'thumb' === $column ) {
+	if ( 'logo' === $column ) {
 		$logo_id = get_term_meta( $id, 'logo_id', true );
 
 		if ( $logo_id ) {
@@ -378,3 +288,96 @@ function dots_product_brand_column( $columns, $column, $id ) {
 	return $columns;
 }
 add_filter( 'manage_product_brand_custom_column', 'dots_product_brand_column', 10, 3 );
+
+// Add callback arguments for custom metabox.
+function dots_add_metabox_args( $args ) {
+	class DOTS_Meta_Box_Product_Brands {
+
+		// Output the metabox.
+		public static function output( $post, $box ) {
+			$defaults = array( 'taxonomy' => 'category' );
+
+			if ( ! isset( $box['args'] ) || ! is_array( $box['args'] ) ) {
+				$args = array();
+			} else {
+				$args = $box['args'];
+			}
+
+			$parsed_args = wp_parse_args( $args, $defaults );
+			$tax_name    = $parsed_args['taxonomy'];
+			$taxonomy    = get_taxonomy( $parsed_args['taxonomy'] );
+			?>
+
+			<div id="taxonomy-<?php echo $tax_name; ?>" class="categorydiv">
+				<ul id="<?php echo $tax_name; ?>-tabs" class="category-tabs">
+					<li class="tabs">
+						<a href="#<?php echo $tax_name; ?>-all"><?php echo $taxonomy->labels->all_items; ?></a>
+					</li>
+					<li class="hide-if-no-js">
+						<a href="#<?php echo $tax_name; ?>-pop"><?php echo esc_html( $taxonomy->labels->most_used ); ?></a>
+					</li>
+				</ul>
+
+				<div id="<?php echo $tax_name; ?>-pop" class="tabs-panel" style="display: none;">
+					<ul id="<?php echo $tax_name; ?>checklist-pop" class="categorychecklist form-no-clear">
+						<?php $popular_ids = wp_popular_terms_checklist( $tax_name ); ?>
+					</ul>
+				</div>
+
+				<div id="<?php echo $tax_name; ?>-all" class="tabs-panel">
+					<?php
+						$name = ( 'category' === $tax_name ) ? 'post_category' : 'tax_input[' . $tax_name . ']';
+						echo "<input type='hidden' name='{$name}[]' value='0' />";
+					?>
+					<ul
+						id="<?php echo $tax_name; ?>checklist"
+						data-wp-lists="list:<?php echo $tax_name; ?>"
+						class="categorychecklist form-no-clear"
+					>
+						<?php
+							wp_terms_checklist( $post->ID, array(
+								'taxonomy'     => $tax_name,
+								'popular_cats' => $popular_ids,
+							) );
+						?>
+					</ul>
+				</div>
+			</div>
+
+			<?php
+		}
+	}
+
+	if ( ! isset( $args['meta_box_cb'] ) ) {
+		$args['meta_box_cb']          = 'DOTS_Meta_Box_Product_Brands::output';
+		$args['meta_box_sanitize_cb'] = 'taxonomy_meta_box_sanitize_cb_checkboxes';
+	}
+	return $args;
+}
+add_filter( 'dots_taxonomy_args_product_brand', 'dots_add_metabox_args' );
+
+// Brands column added to products admin.
+function dots_admin_product_brand_columns( $columns ) {
+	$columns['product_brand'] = __( 'Brands', 'dots-elementor' );
+	return array_slice( $columns, 0, 7, true ) + array( 'product_brand' => 'Brands' ) + array_slice( $columns, 7, count( $columns ) - 7, true );
+}
+add_filter( 'manage_edit-product_columns', 'dots_admin_product_brand_columns' );
+
+// Brands column value added to products admin.
+function dots_admin_product_brand_column( $column, $product_id ) {
+	if ( 'product_brand' === $column  ) {
+		$terms = get_the_terms( $product_id , 'product_brand' );
+
+		if ( ! $terms ) {
+			echo '<span class="na">&ndash;</span>';
+		} else {
+			$termlist = array();
+			foreach ( $terms as $term ) {
+				$termlist[] = '<a href="' . esc_url( admin_url( 'edit.php?product_brand=' . $term->slug . '&post_type=product' ) ) . ' ">' . esc_html( $term->name ) . '</a>';
+			}
+
+			echo apply_filters( 'woocommerce_admin_product_term_list', implode( ', ', $termlist ), 'product_brand', $product_id , $termlist, $terms ); // WPCS: XSS ok.
+		}
+	}
+}
+add_filter( 'manage_product_posts_custom_column', 'dots_admin_product_brand_column', 10, 7 );

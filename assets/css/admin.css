@@ -1,0 +1,9 @@
+table.wp-list-table .column-logo {
+    width: 52px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+table.wp-list-table .column-product_brand {
+    width: 11% !important;
+}
