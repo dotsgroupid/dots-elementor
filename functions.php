@@ -85,7 +85,7 @@ add_action( 'after_setup_theme', 'dots_elementor_setup' );
 if ( ! function_exists( 'dots_elementor_scripts_styles' ) ) {
 	function dots_elementor_scripts_styles()
 	{
-		wp_enqueue_style( 'dots-tailwind', get_parent_theme_file_uri('assets/css/tailwind.css'), [], '2.2.4' );
+		wp_enqueue_style( 'dots-tailwind-style', get_parent_theme_file_uri('assets/css/tailwind.css'), [], '2.2.4' );
 
 		wp_enqueue_style( 'dots-elementor-style', get_stylesheet_uri(), [], '1.0' );
 		wp_enqueue_style( 'dots-elementor-theme', get_parent_theme_file_uri('assets/css/theme.css'), [], '1.0' );
@@ -136,15 +136,16 @@ if ( ! function_exists( 'dots_elementor_add_description_meta_tag' ) ) {
 }
 add_action( 'wp_head', 'dots_elementor_add_description_meta_tag' );
 
-// Admin notice for several plugins.
-if ( is_admin() ) {
-	require get_template_directory() . '/includes/admin-functions.php';
+// Custom Admin Functions.
+require get_template_directory() . '/includes/admin-functions.php';
 
-	// Elementor
-	require get_template_directory() . '/includes/elementor-functions.php';
+// Custom Slider Functions.
+require get_template_directory() . '/includes/slider-functions.php';
 
-	// WooCommerce
-	if ( class_exists( 'woocommerce' ) ) {
-		require get_template_directory() . '/includes/woocommerce-functions.php';
-	}
+// Custom Elementor Plugins Functions.
+require get_template_directory() . '/includes/elementor-functions.php';
+
+// Custom WooCommerce Plugins Functions.
+if ( class_exists( 'woocommerce' ) ) {
+	require get_template_directory() . '/includes/woocommerce-functions.php';
 }
