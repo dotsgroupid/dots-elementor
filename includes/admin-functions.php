@@ -120,6 +120,7 @@ function dots_elementor_fail_load_admin_notice() {
 			}
 		}
 	</style>
+
 	<script>
 		window.addEventListener( 'load', () => {
 			const dismissNotice = document.querySelector( '.notice.dots-elementor-install-elementor button.notice-dismiss' );
@@ -134,16 +135,20 @@ function dots_elementor_fail_load_admin_notice() {
 			});
 		});
 	</script>
+
 	<div class="notice updated is-dismissible dots-elementor-notice dots-elementor-install-elementor">
+
 		<div class="dots-elementor-notice-aside">
 			<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/elementor-notice-icon.svg' ); ?>" alt="<?php echo esc_attr__( 'Get Elementor', 'dots-elementor' ); ?>" />
 		</div>
+
 		<div class="dots-elementor-notice-content">
 			<h3><?php echo esc_html__( 'Thanks for installing the DOTS. Theme!', 'dots-elementor' ); ?></h3>
 			<p><?php echo esc_html( $message ); ?></p>
 			<a class="dots-elementor-information-link" href="https://thedotscreative.com/products/wp-dots-elementor/" target="_blank"><?php echo esc_html__( 'Learn more about this Theme', 'dots-elementor' ); ?></a>
 			<a class="dots-elementor-install-button" href="<?php echo esc_attr( $button_link ); ?>"><?php echo esc_html( $button_text ); ?></a>
 		</div>
+
 	</div>
 
 <?php

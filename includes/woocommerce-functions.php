@@ -8,14 +8,14 @@
  */
 
 // Register Product Brand taxonomies.
-function dots_register_product_brand() {
+function dots_elementor_register_product_brand() {
 	$shop_page_id = wc_get_page_id( 'shop' );
 
 	register_taxonomy(
 		'product_brand',
 		array( 'product' ),
 		apply_filters(
-			'dots_taxonomy_args_product_brand',
+			'dots_elementor_taxonomy_args_product_brand',
 			array(
 				'hierarchical'          => false,
 				'update_count_callback' => '_wc_term_recount',
@@ -53,10 +53,10 @@ function dots_register_product_brand() {
 	);
 	register_taxonomy_for_object_type( 'product_brand', 'product' );
 }
-add_action( 'init', 'dots_register_product_brand' );
+add_action( 'init', 'dots_elementor_register_product_brand' );
 
 // Change messages when a taxonomies is updated.
-function dots_updated_term_messages( $messages ) {
+function dots_elementor_updated_term_messages( $messages ) {
 	$messages[ 'product_brand' ] = array(
 		0 => '',
 		1 => __( 'Brand added.', 'dots-elementor' ),
@@ -69,10 +69,10 @@ function dots_updated_term_messages( $messages ) {
 
 	return $messages;
 }
-add_filter( 'term_updated_messages', 'dots_updated_term_messages' );
+add_filter( 'term_updated_messages', 'dots_elementor_updated_term_messages' );
 
 // Enqueue styles and scripts.
-function dots_admin_styles_scripts() {
+function dots_elementor_admin_styles_scripts() {
 	$screen    = get_current_screen();
 	$screen_id = $screen ? $screen->id : '';
 
@@ -82,22 +82,24 @@ function dots_admin_styles_scripts() {
 		wp_enqueue_media();
 	}
 }
-add_action( 'admin_enqueue_scripts', 'dots_admin_styles_scripts' );
+add_action( 'admin_enqueue_scripts', 'dots_elementor_admin_styles_scripts' );
 
 // Add product brand logo fields.
-function dots_product_brand_add_fields() {
+function dots_elementor_product_brand_add_fields() {
 ?>
-
 	<div class="form-field term-logo-wrap">
+
 		<label><?php esc_html_e( 'Logo', 'dots-elementor' ); ?></label>
 		<div id="product_brand_logo" style="float: left; margin-right: 10px;">
 			<img src="<?php echo esc_url( wc_placeholder_img_src() ); ?>" width="60px" height="60px" />
 		</div>
+
 		<div style="line-height: 60px;">
 			<input type="hidden" id="product_brand_logo_id" name="product_brand_logo_id" />
 			<button type="button" class="upload_logo_button button"><?php esc_html_e( 'Upload/Add logo', 'dots-elementor' ); ?></button>
 			<button type="button" class="remove_logo_button button"><?php esc_html_e( 'Remove logo', 'dots-elementor' ); ?></button>
 		</div>
+
 		<script type="text/javascript">
 			if ( ! jQuery( '#product_brand_logo_id' ).val() ) {
 				jQuery( '.remove_logo_button' ).hide();
@@ -160,15 +162,16 @@ function dots_product_brand_add_fields() {
 				}
 			});
 		</script>
-		<div class="clear"></div>
-	</div>
 
+		<div class="clear"></div>
+
+	</div>
 <?php
 }
-add_action( 'product_brand_add_form_fields', 'dots_product_brand_add_fields', 10, 2 );
+add_action( 'product_brand_add_form_fields', 'dots_elementor_product_brand_add_fields', 10, 2 );
 
 // Edit product brand logo fields.
-function dots_product_brand_edit_fields( $term ) {
+function dots_elementor_product_brand_edit_fields( $term ) {
 	$logo_id = absint(get_term_meta( $term->term_id, 'logo_id', true ) );
 
 	if ( $logo_id ) {
@@ -176,21 +179,24 @@ function dots_product_brand_edit_fields( $term ) {
 	} else {
 		$logo = wc_placeholder_img_src();
 	}
-	?>
-
+?>
 	<tr class="form-field term-logo-wrap">
+
 		<th scope="row" valign="top">
 			<label><?php esc_html_e( 'Logo', 'dots-elementor' ); ?></label>
 		</th>
+
 		<td>
 			<div id="product_brand_logo" style="float: left; margin-right: 10px;">
 				<img src="<?php echo esc_url( $logo ); ?>" width="60px" height="60px" />
 			</div>
+
 			<div style="line-height: 60px;">
 				<input type="hidden" id="product_brand_logo_id" name="product_brand_logo_id" value="<?php echo esc_attr( $logo_id ); ?>" />
 				<button type="button" class="upload_logo_button button"><?php esc_html_e( 'Upload/Add logo', 'dots-elementor' ); ?></button>
 				<button type="button" class="remove_logo_button button"><?php esc_html_e( 'Remove logo', 'dots-elementor' ); ?></button>
 			</div>
+
 			<script type="text/javascript">
 				if ( '0' === jQuery( '#product_brand_logo_id' ).val()) {
 					jQuery( '.remove_logo_button' ).hide();
@@ -236,25 +242,26 @@ function dots_product_brand_edit_fields( $term ) {
 					return false;
 				});
 			</script>
+
 			<div class="clear"></div>
 		</td>
-	</tr>
 
-	<?php
+	</tr>
+<?php
 }
-add_action( 'product_brand_edit_form_fields', 'dots_product_brand_edit_fields', 10 );
+add_action( 'product_brand_edit_form_fields', 'dots_elementor_product_brand_edit_fields', 10 );
 
 // Save product brand fields.
-function dost_product_brand_save_fields( $term_id, $tt_id = '', $taxonomy = '' ) {
+function dots_elementor_product_brand_save_fields( $term_id, $tt_id = '', $taxonomy = '' ) {
 	if ( isset( $_POST['product_brand_logo_id'] ) && 'product_brand' === $taxonomy ) {
 		update_term_meta( $term_id, 'logo_id', absint( $_POST['product_brand_logo_id'] ) );
 	}
 }
-add_action( 'created_term', 'dost_product_brand_save_fields', 10, 3 );
-add_action( 'edit_term', 'dost_product_brand_save_fields', 10, 3 );
+add_action( 'created_term', 'dots_elementor_product_brand_save_fields', 10, 3 );
+add_action( 'edit_term', 'dots_elementor_product_brand_save_fields', 10, 3 );
 
 // Add product brand logo column added to brands admin.
-function dots_product_brand_columns( $columns ) {
+function dots_elementor_product_brand_columns( $columns ) {
 	$new_columns = array();
 
 	if ( isset( $columns['cb'] ) ) {
@@ -267,10 +274,10 @@ function dots_product_brand_columns( $columns ) {
 
 	return $columns;
 }
-add_filter( 'manage_edit-product_brand_columns', 'dots_product_brand_columns' );
+add_filter( 'manage_edit-product_brand_columns', 'dots_elementor_product_brand_columns' );
 
 // Add product brand logo column value added to brands admin.
-function dots_product_brand_column( $columns, $column, $id ) {
+function dots_elementor_product_brand_column( $columns, $column, $id ) {
 	if ( 'logo' === $column ) {
 		$logo_id = get_term_meta( $id, 'logo_id', true );
 
@@ -287,11 +294,11 @@ function dots_product_brand_column( $columns, $column, $id ) {
 
 	return $columns;
 }
-add_filter( 'manage_product_brand_custom_column', 'dots_product_brand_column', 10, 3 );
+add_filter( 'manage_product_brand_custom_column', 'dots_elementor_product_brand_column', 10, 3 );
 
 // Add callback arguments for custom metabox.
-function dots_add_metabox_args( $args ) {
-	class DOTS_Meta_Box_Product_Brands {
+function dots_elementor_add_metabox_args( $args ) {
+	class DOTS_Elementor_Meta_Box_Product_Brands {
 		public static function output( $post, $box ) {
 			$defaults = array( 'taxonomy' => 'category' );
 
@@ -304,9 +311,9 @@ function dots_add_metabox_args( $args ) {
 			$parsed_args = wp_parse_args( $args, $defaults );
 			$tax_name    = $parsed_args['taxonomy'];
 			$taxonomy    = get_taxonomy( $parsed_args['taxonomy'] );
-			?>
-
+?>
 			<div id="taxonomy-<?php echo $tax_name; ?>" class="categorydiv">
+
 				<ul id="<?php echo $tax_name; ?>-tabs" class="category-tabs">
 					<li class="tabs">
 						<a href="#<?php echo $tax_name; ?>-all"><?php echo $taxonomy->labels->all_items; ?></a>
@@ -340,29 +347,31 @@ function dots_add_metabox_args( $args ) {
 						?>
 					</ul>
 				</div>
+
 			</div>
 
-			<?php
+<?php
 		}
 	}
 
 	if ( ! isset( $args['meta_box_cb'] ) ) {
-		$args['meta_box_cb']          = 'DOTS_Meta_Box_Product_Brands::output';
+		$args['meta_box_cb']          = 'DOTS_Elementor_Meta_Box_Product_Brands::output';
 		$args['meta_box_sanitize_cb'] = 'taxonomy_meta_box_sanitize_cb_checkboxes';
 	}
+
 	return $args;
 }
-add_filter( 'dots_taxonomy_args_product_brand', 'dots_add_metabox_args' );
+add_filter( 'dots_elementor_taxonomy_args_product_brand', 'dots_add_metabox_args' );
 
 // Brands column added to products admin.
-function dots_admin_product_brand_columns( $columns ) {
+function dots_elementor_admin_product_brand_columns( $columns ) {
 	$columns['product_brand'] = __( 'Brands', 'dots-elementor' );
 	return array_slice( $columns, 0, 7, true ) + array( 'product_brand' => 'Brands' ) + array_slice( $columns, 7, count( $columns ) - 7, true );
 }
-add_filter( 'manage_edit-product_columns', 'dots_admin_product_brand_columns' );
+add_filter( 'manage_edit-product_columns', 'dots_elementor_admin_product_brand_columns' );
 
 // Brands column value added to products admin.
-function dots_admin_product_brand_column( $column, $product_id ) {
+function dots_elementor_admin_product_brand_column( $column, $product_id ) {
 	if ( 'product_brand' === $column  ) {
 		$terms = get_the_terms( $product_id , 'product_brand' );
 
@@ -378,4 +387,4 @@ function dots_admin_product_brand_column( $column, $product_id ) {
 		}
 	}
 }
-add_filter( 'manage_product_posts_custom_column', 'dots_admin_product_brand_column', 10, 7 );
+add_filter( 'manage_product_posts_custom_column', 'dots_elementor_admin_product_brand_column', 10, 7 );

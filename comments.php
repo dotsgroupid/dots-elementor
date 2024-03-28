@@ -27,23 +27,25 @@ if ( comments_open() && get_option( 'thread_comments' ) ) {
 	<?php if ( have_comments() ) : ?>
 		<h3 class="title-comments">
 			<?php
-			$comments_number = get_comments_number();
-			if ( '1' === $comments_number ) {
-				printf( esc_html_x( 'One Response', 'comments title', 'hello-elementor' ) );
-			} else {
-				printf(
-					esc_html( /* translators: 1: number of comments */
-						_nx(
-							'%1$s Response',
-							'%1$s Responses',
-							$comments_number,
-							'comments title',
-							'hello-elementor'
-						)
-					),
-					esc_html( number_format_i18n( $comments_number ) )
-				);
-			}
+				$comments_number = get_comments_number();
+
+				if ( '1' === $comments_number ) {
+					printf( esc_html_x( 'One Response', 'comments title', 'dots-elementor' ) );
+				} else {
+					printf(
+						esc_html(
+							_nx(
+								'%1$s Response',
+								'%1$s Responses',
+								$comments_number,
+								'comments title',
+								'dots-elementor'
+							)
+						),
+
+						esc_html( number_format_i18n( $comments_number ) )
+					);
+				}
 			?>
 		</h3>
 
@@ -51,13 +53,13 @@ if ( comments_open() && get_option( 'thread_comments' ) ) {
 
 	<ol class="comment-list">
 		<?php
-		wp_list_comments(
-			[
-				'style'       => 'ol',
-				'short_ping'  => true,
-				'avatar_size' => 42,
-			]
-		);
+			wp_list_comments(
+				[
+					'style'       => 'ol',
+					'short_ping'  => true,
+					'avatar_size' => 42,
+				]
+			);
 		?>
 	</ol>
 
