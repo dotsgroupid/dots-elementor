@@ -27,6 +27,13 @@
 }
 
 /*
+ * Root
+ */
+body {
+	-webkit-font-smoothing: antialiased;
+}
+
+/*
  * Tailwind
  *
  * 1. Color
@@ -35,12 +42,32 @@
  */
 
 /* 1. Color */
+.bg-neutral-900 {
+	background-color: #181818;
+}
+
+.bg-semantic-success-high {
+	background-color: rgb(76 175 80 / 30%);
+}
+
 .border-neutral-800 {
 	border-color: #282828;
 }
 
+.border-neutral-900 {
+	border-color: #181818;
+}
+
 .text-primary-1 {
 	color: #f68522;
+}
+
+.text-neutral-0 {
+	color: #ffffff;
+}
+
+.text-neutral-700 {
+	color: #616161;
 }
 
 .text-neutral-300 {
@@ -52,6 +79,10 @@
 	border-width: 1px;
 }
 
+.border-t-2 {
+	border-top-width: 2px;
+}
+
 .border-solid {
 	border-style: solid;
 }
@@ -60,9 +91,21 @@
 	border-radius: 0.5rem;
 }
 
+.rounded-6 {
+	border-radius: 1.5rem;
+}
+
 /* 3. Display */
+.custom-area .lower {
+	max-width: calc(100vw - 1rem);
+}
+
 .container {
 	width: 100%;
+}
+
+.h-38 {
+	height: 9.5rem;
 }
 
 @media (min-width: 640px) {
@@ -72,31 +115,23 @@
 }
 
 @media (min-width: 768px) {
-	.container {
-		max-width: 768px;
-	}
-
+	.container,
 	.md\:container {
 		max-width: 768px;
 	}
 }
 
 @media (min-width: 1024px) {
-	.container {
-		max-width: 1024px;
-	}
-
+	.container,
 	.lg\:container {
 		max-width: 1024px;
 	}
 }
 
 @media (min-width: 1136px) {
-	.container {
-		max-width: 1136px;
-	}
-
-	.xl\:container {
+	.container,
+	.xl\:container,
+	.xl\:max-w-screen-xl {
 		max-width: 1136px;
 	}
 }
@@ -145,14 +180,87 @@
 }
 
 .slick-arrow.slick-next.slick-disabled,
-.slick-arrow.slick-prev.slick-disabled {
+.slick-arrow.slick-prev.slick-disabled,
+.custom-area .product-slider.active-slide-list .slick-disabled {
 	display: none !important;
+}
+
+/* prettier-ignore */
+.custom-area .slick-track, .social-feed .slick-track {
+	display: -ms-flexbox !important;
+	display: flex !important;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+/* prettier-ignore */
+.custom-area .slick-slide, .social-feed .slick-slide {
+	height: inherit !important;
+}
+
+/* prettier-ignore */
+.custom-area .slick-slide > div, .social-feed .slick-slide > div {
+	height: 100%;
+}
+
+/*
+ * Products
+ */
+.product-card-container .product-card {
+	min-height: 17rem;
+}
+
+.product-card-container .product-card .box-img {
+	background: url(https://assets.jamtangan.com/static/e292cece8ce497a7adb3.png);
+	background-position: 50%;
+	background-size: 70px;
+	background-repeat: no-repeat;
+	min-height: 10.5rem;
+}
+
+.badge {
+	letter-spacing: 0.016rem;
+}
+
+.product-card-container .product-card .product-name,
+.social-feed figcaption p {
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	display: -webkit-box;
+	overflow: hidden;
 }
 
 /*
  * Responsive
  */
+@media screen and (max-width: 768px) {
+	.custom-area.product-list {
+		width: calc(100% + 32px);
+		margin-left: -16px;
+	}
+
+	.custom-area.product-list .lower {
+		max-width: 100%;
+	}
+}
+
 @media screen and (min-width: 768px) {
+	/* prettier-ignore */
+	.custom-area .upper, .brands .upper, .social-feed .upper,
+	.blog-feed .upper, .blog-feed .lower {
+		max-width: calc(100vw - 2rem);
+	}
+
+	/* prettier-ignore */
+	.brands .upper, .brands .lower,
+	.custom-area .upper, .custom-area .lower,
+	.social-feed .upper, .social-feed .lower,
+	.blog-feed .upper, .blog-feed .lower {
+		max-width: 768px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
 	#banner .slick-slide,
 	#banner
 		.slick-slide[aria-hidden="true"]:not(.slick-cloned)
@@ -176,19 +284,10 @@
 		transform: scale(1);
 	}
 
-	.brands .upper {
-		max-width: calc(100vw - 2rem);
-	}
-
 	/* prettier-ignore */
-	.brands .upper, .brands .lower {
-		max-width: 768px;
-		margin-left: auto;
-		margin-right: auto;
-	}
-
-	/* prettier-ignore */
-	.brands .slick-slider, .brands .slider {
+	.brands .slick-slider, .brands .slider,
+	.custom-area .lower .slick-slider, .custom-area .lower .slider,
+	.social-feed .lower .slick-slider, .social-feed .lower .slider {
 		margin: 0 -0.5rem;
 	}
 
@@ -203,14 +302,20 @@
 
 @media screen and (min-width: 1024px) {
 	/* prettier-ignore */
-	.brands .upper, .brands .lower {
-        max-width: 1024px;
-    }
+	.brands .upper, .brands .lower,
+	.custom-area .upper, .custom-area .lower,
+	.social-feed .upper, .social-feed .lower,
+	.blog-feed .upper, .blog-feed .lower {
+		max-width: 1024px;
+	}
 }
 
 @media screen and (min-width: 1136px) {
 	/* prettier-ignore */
-	.brands .upper, .brands .lower {
+	.brands .upper, .brands .lower,
+	.custom-area .upper, .custom-area .lower,
+	.social-feed .upper, .social-feed .lower,
+	.blog-feed .upper, .blog-feed .lower {
 		max-width: 1136px;
 	}
 }
