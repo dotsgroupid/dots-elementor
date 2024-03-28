@@ -292,8 +292,6 @@ add_filter( 'manage_product_brand_custom_column', 'dots_product_brand_column', 1
 // Add callback arguments for custom metabox.
 function dots_add_metabox_args( $args ) {
 	class DOTS_Meta_Box_Product_Brands {
-
-		// Output the metabox.
 		public static function output( $post, $box ) {
 			$defaults = array( 'taxonomy' => 'category' );
 
@@ -376,7 +374,7 @@ function dots_admin_product_brand_column( $column, $product_id ) {
 				$termlist[] = '<a href="' . esc_url( admin_url( 'edit.php?product_brand=' . $term->slug . '&post_type=product' ) ) . ' ">' . esc_html( $term->name ) . '</a>';
 			}
 
-			echo apply_filters( 'woocommerce_admin_product_term_list', implode( ', ', $termlist ), 'product_brand', $product_id , $termlist, $terms ); // WPCS: XSS ok.
+			echo apply_filters( 'woocommerce_admin_product_term_list', implode( ', ', $termlist ), 'product_brand', $product_id , $termlist, $terms );
 		}
 	}
 }

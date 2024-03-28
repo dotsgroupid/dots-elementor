@@ -211,10 +211,6 @@ body {
 }
 
 .product-card-container .product-card .box-img {
-	background: url(https://assets.jamtangan.com/static/e292cece8ce497a7adb3.png);
-	background-position: 50%;
-	background-size: 70px;
-	background-repeat: no-repeat;
 	min-height: 10.5rem;
 }
 

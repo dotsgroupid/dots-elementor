@@ -62,8 +62,7 @@ function dots_updated_slider_messages( $messages ) {
 add_filter( 'post_updated_messages', 'dots_updated_slider_messages' );
 
 // Specify custom bulk actions messages for different post types.
-function dots_bulk_slider_updated_messages( $bulk_messages, $bulk_counts )
-{
+function dots_bulk_slider_updated_messages( $bulk_messages, $bulk_counts ) {
     $bulk_messages['slider'] = array(
         'updated'   => _n( '%s slider updated.', '%s sliders diperbarui.', $bulk_counts['updated'], 'dots-elementor' ),
         'locked'    => _n( '%s slider not updated, somebody is editing it.', '%s sliders not updated, somebody is editing them.', $bulk_counts['locked'], 'dots-elementor' ),

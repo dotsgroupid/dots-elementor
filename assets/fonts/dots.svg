@@ -5,7 +5,7 @@ var SvgDotsIcon = function SvgDotsIcon(props) {
   return /*#__PURE__*/React.createElement("svg", _extends({
     xmlns: "http://www.w3.org/2000/svg"
   }, props), _defs || (_defs = /*#__PURE__*/React.createElement("defs", null, /*#__PURE__*/React.createElement("font", {
-    id: "Jamtangan-Icon_svg__icomoon",
+    id: "Dots-Icon_svg__icomoon",
     horizAdvX: 1024
   }, /*#__PURE__*/React.createElement("fontFace", {
     unitsPerEm: 1024,
