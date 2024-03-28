@@ -9,6 +9,11 @@
  * @since 1.0
  */
 
+// Define Constants.
+define( 'DOTS_THEME_VERSION', '1.0' );
+define( 'DOTS_THEME_DIR', trailingslashit( get_template_directory() ) );
+define( 'DOTS_THEME_URI', trailingslashit( esc_url( get_template_directory_uri() ) ) );
+
 // Set the content width based on the theme's design and stylesheet
 if ( ! isset( $content_width ) ) {
 	$content_width = 1136;
@@ -81,15 +86,15 @@ add_action( 'after_setup_theme', 'dots_elementor_setup' );
 
 // Enqueue scripts and styles.
 function dots_elementor_scripts_styles() {
-	wp_enqueue_style( 'dots-tailwind-style', get_parent_theme_file_uri('assets/css/tailwind.css'), [], '2.2.4' );
+	wp_enqueue_style( 'dots-tailwind-style', DOTS_THEME_URI . 'assets/css/tailwind.css', [], '2.2.4' );
 
-	wp_enqueue_style( 'dots-elementor-style', get_stylesheet_uri(), [], '1.0' );
-	wp_enqueue_style( 'dots-elementor-theme', get_parent_theme_file_uri('assets/css/theme.css'), [], '1.0' );
+	wp_enqueue_style( 'dots-elementor-style', get_stylesheet_uri(), [], DOTS_THEME_VERSION );
+	wp_enqueue_style( 'dots-elementor-theme', DOTS_THEME_URI . 'assets/css/theme.css', [], DOTS_THEME_VERSION );
 
-	wp_enqueue_style( 'dots-slick-style', get_parent_theme_file_uri('assets/css/slick.css'), [], '1.8.1' );
-	wp_enqueue_script( 'dots-slick-script', get_parent_theme_file_uri('assets/js/slick.js'), array('jquery'), '1.8.1', true );
+	wp_enqueue_style( 'dots-slick-style', DOTS_THEME_URI . 'assets/css/slick.css', [], '1.8.1' );
+	wp_enqueue_script( 'dots-slick-script', DOTS_THEME_URI . 'assets/js/slick.js', array('jquery'), '1.8.1', true );
 
-	wp_enqueue_script( 'dots-elementor-script', get_parent_theme_file_uri('assets/js/script.js'), array('jquery'), '1.0', true );
+	wp_enqueue_script( 'dots-elementor-script', DOTS_THEME_URI . 'assets/js/script.js', array('jquery'), DOTS_THEME_VERSION, true );
 
 	wp_dequeue_style('wp-block-library');
 	wp_dequeue_style('wp-block-library-theme');
@@ -128,15 +133,12 @@ function dots_elementor_add_description_meta_tag() {
 add_action( 'wp_head', 'dots_elementor_add_description_meta_tag' );
 
 // Custom Admin Functions.
-require get_template_directory() . '/includes/admin-functions.php';
+require_once DOTS_THEME_DIR . '/includes/admin-functions.php';
 
 // Custom Slider Functions.
-require get_template_directory() . '/includes/slider-functions.php';
-
-// Custom Elementor Plugins Functions.
-require get_template_directory() . '/includes/elementor-functions.php';
+require_once DOTS_THEME_DIR . '/includes/slider-functions.php';
 
 // Custom WooCommerce Plugins Functions.
 if ( class_exists( 'woocommerce' ) ) {
-	require get_template_directory() . '/includes/woocommerce-functions.php';
+	require_once DOTS_THEME_DIR . '/includes/woocommerce-functions.php';
 }

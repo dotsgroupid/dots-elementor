@@ -76,7 +76,7 @@ function dots_admin_styles_scripts() {
 	$screen    = get_current_screen();
 	$screen_id = $screen ? $screen->id : '';
 
-	wp_enqueue_style( 'dots-admin-style', get_parent_theme_file_uri('assets/css/admin.css'), [], '1.0' );
+	wp_enqueue_style( 'dots-admin-style', DOTS_THEME_DIR . 'assets/css/admin.css', [], DOTS_THEME_VERSION );
 
 	if ( in_array( $screen_id, array( 'edit-product_brand' ) ) ) {
 		wp_enqueue_media();
