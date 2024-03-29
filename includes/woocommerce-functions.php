@@ -361,7 +361,7 @@ function dots_elementor_add_metabox_args( $args ) {
 
 	return $args;
 }
-add_filter( 'dots_elementor_taxonomy_args_product_brand', 'dots_add_metabox_args' );
+add_filter( 'dots_elementor_taxonomy_args_product_brand', 'dots_elementor_add_metabox_args' );
 
 // Brands column added to products admin.
 function dots_elementor_admin_product_brand_columns( $columns ) {
