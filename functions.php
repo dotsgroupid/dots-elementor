@@ -75,12 +75,10 @@ function dots_elementor_setup() {
 	);
 
 	// Add theme support for WooCommerce.
-	if ( apply_filters( 'dots_add_woocommerce_support', true ) ) {
-		add_theme_support( 'woocommerce' ); // WooCommerce in general.
-		add_theme_support( 'wc-product-gallery-zoom' ); // Enabling WooCommerce product gallery zoom.
-		add_theme_support( 'wc-product-gallery-lightbox' ); // Enabling WooCommerce product gallery lightbox.
-		add_theme_support( 'wc-product-gallery-slider' ); // Enabling WooCommerce product gallery slider.
-	}
+	add_theme_support( 'woocommerce' ); // WooCommerce in general.
+	add_theme_support( 'wc-product-gallery-zoom' ); // Enabling WooCommerce product gallery zoom.
+	add_theme_support( 'wc-product-gallery-lightbox' ); // Enabling WooCommerce product gallery lightbox.
+	add_theme_support( 'wc-product-gallery-slider' ); // Enabling WooCommerce product gallery slider.
 }
 add_action( 'after_setup_theme', 'dots_elementor_setup' );
 
@@ -92,9 +90,9 @@ function dots_elementor_scripts_styles() {
 	wp_enqueue_style( 'dots-elementor-theme', DOTS_THEME_URI . 'assets/css/theme.css', [], DOTS_THEME_VERSION );
 
 	wp_enqueue_style( 'dots-slick-style', DOTS_THEME_URI . 'assets/css/slick.css', [], '1.8.1' );
-	wp_enqueue_script( 'dots-slick-script', DOTS_THEME_URI . 'assets/js/slick.js', array('jquery'), '1.8.1', true );
+	wp_enqueue_script( 'dots-slick-script', DOTS_THEME_URI . 'assets/js/slick.js', array( 'jquery' ), '1.8.1', true );
 
-	wp_enqueue_script( 'dots-elementor-script', DOTS_THEME_URI . 'assets/js/script.js', array('jquery'), DOTS_THEME_VERSION, true );
+	wp_enqueue_script( 'dots-elementor-script', DOTS_THEME_URI . 'assets/js/script.js', array( 'jquery' ), DOTS_THEME_VERSION, true );
 
 	wp_dequeue_style('wp-block-library');
 	wp_dequeue_style('wp-block-library-theme');
@@ -135,10 +133,26 @@ add_action( 'wp_head', 'dots_elementor_add_description_meta_tag' );
 // Custom Admin Functions.
 require_once DOTS_THEME_DIR . '/includes/admin-functions.php';
 
-// Custom Slider Functions.
-require_once DOTS_THEME_DIR . '/includes/slider-functions.php';
+// Custom Elementor Plugins Functions.
+if ( did_action( 'elementor/loaded' ) ) {
+	require_once DOTS_THEME_DIR . '/includes/elementor-functions.php';
+}
 
 // Custom WooCommerce Plugins Functions.
 if ( class_exists( 'woocommerce' ) ) {
 	require_once DOTS_THEME_DIR . '/includes/woocommerce-functions.php';
 }
+
+// Check whether to display the page title.
+function dots_elementor_check_hide_title( $val ) {
+	if ( defined( 'ELEMENTOR_VERSION' ) ) {
+		$current_doc = Elementor\Plugin::instance()->documents->get( get_the_ID() );
+
+		if ( $current_doc && 'yes' === $current_doc->get_settings( 'hide_title' ) ) {
+			$val = false;
+		}
+	}
+
+	return $val;
+}
+add_filter( 'dots_elementor_page_title', 'dots_elementor_check_hide_title' );
