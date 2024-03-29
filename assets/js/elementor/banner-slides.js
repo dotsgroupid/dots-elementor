@@ -1,4 +1,4 @@
-class DOTS_Slides extends elementorModules.frontend.handlers.Base {
+class DEA_Banner_Slides extends elementorModules.frontend.handlers.Base {
 	getDefaultSettings() {
 		return {
 			selectors: {
@@ -14,23 +14,6 @@ class DOTS_Slides extends elementorModules.frontend.handlers.Base {
 		};
 	}
 
-	getSlickSettings() {
-		const elementSettings = this.getElementSettings();
-
-		const slickOptions = {
-			autoplay: 'yes' === elementSettings.autoplay,
-			speed: elementSettings.speed,
-		};
-
-		if ( 'yes' === elementSettings.autoplay ) {
-			slickOptions.autoplay = {
-				speed: elementSettings.speed,
-			};
-		}
-
-		return slickOptions;
-	}
-
 	onInit() {
 		super.onInit();
 
@@ -42,16 +25,32 @@ class DOTS_Slides extends elementorModules.frontend.handlers.Base {
 			dots: -1 !== [ 'dots', 'both' ].indexOf( elementSettings.navigation ),
 			infinite: 'yes' === elementSettings.infinite,
 			speed: elementSettings.speed,
-			variableWidth: true,
+			variableWidth: 'true' === elementSettings.variable_width,
+			responsive: [
+				{
+					breakpoint: 480,
+					settings: {
+						arrows: false,
+						centerMode: false,
+						centerPadding: '40px',
+						slidesToShow: 1,
+						variableWidth: false,
+					},
+				},
+			],
 		}
 
 		if ( 'yes' === elementSettings.autoplay ) {
+			slickOptions.autoplay = {
+				pauseOnHover: elementSettings.pause_on_hover,
+			};
+
 			slickOptions.autoplay = {
 				autoplaySpeed: elementSettings.autoplay_speed,
 			};
 		}
 
-		if ( 'yes' === elementSettings.centerPadding ) {
+		if ( 'yes' === elementSettings.center_mode ) {
 			slickOptions.centerPadding = {
 				centerPadding: elementSettings.center_padding.size + elementSettings.center_padding.unit,
 			};
@@ -63,10 +62,10 @@ class DOTS_Slides extends elementorModules.frontend.handlers.Base {
 
 jQuery( window ).on( 'elementor/frontend/init', () => {
 	const addHandler = ( $element ) => {
-		elementorFrontend.elementsHandler.addHandler( DOTS_Slides, {
+		elementorFrontend.elementsHandler.addHandler( DEA_Banner_Slides, {
 			$element,
 		} );
 	};
 
-	elementorFrontend.hooks.addAction( 'frontend/element_ready/dots-slides.default', addHandler );
+	elementorFrontend.hooks.addAction( 'frontend/element_ready/dea-banner-slides.default', addHandler );
 } );

@@ -12,13 +12,13 @@ use Elementor\Repeater;
 use Elementor\Controls_Manager;
 use Elementor\Utils;
 
-class Elementor_Slides_Widget extends Widget_Base {
+class Elementor_Banner_Slides_Widget extends Widget_Base {
 	public function get_name() {
-		return 'dots-slides';
+		return 'dea-banner-slides';
 	}
 
 	public function get_title() {
-		return esc_html__( 'DEA - Slides', 'dots-elementor' );
+		return esc_html__( 'DEA - Banner Slides', 'dots-elementor' );
 	}
 
 	public function get_icon() {
@@ -30,11 +30,11 @@ class Elementor_Slides_Widget extends Widget_Base {
 	}
 
 	public function get_keywords() {
-		return [ 'dea', 'dots', 'slides', 'slider' ];
+		return [ 'dea', 'dots' ];
 	}
 
 	public function get_script_depends() {
-		return [ 'dots-elementor-editor-script' ];
+		return [ 'dea-banner-slides-script' ];
 	}
 
 	public function get_custom_help_url() {
@@ -56,7 +56,6 @@ class Elementor_Slides_Widget extends Widget_Base {
 				[
 					'type' => Controls_Manager::TEXT,
 					'label' => esc_html__( 'Title', 'dots-elementor' ),
-					'default' => esc_html__( 'Slide Heading', 'dots-elementor' ),
 					'label_block' => true,
 					'dynamic' => [
 						'active' => true,
@@ -70,7 +69,7 @@ class Elementor_Slides_Widget extends Widget_Base {
 					'type' => Controls_Manager::MEDIA,
 					'label' => esc_html__( 'Image', 'Background Control', 'dots-elementor' ),
 					'default' => [
-						'url' => \Elementor\Utils::get_placeholder_image_src(),
+						'url' => 'https://placehold.co/720x360',
 					],
 				],
 			);
@@ -139,7 +138,7 @@ class Elementor_Slides_Widget extends Widget_Base {
 						'dots' => esc_html__( 'Dots', 'dots-elementor' ),
 						'none' => esc_html__( 'None', 'dots-elementor' ),
 					],
-					'default' => 'both',
+					'default' => 'arrows',
 					'frontend_available' => true,
 				],
 			);
@@ -150,6 +149,19 @@ class Elementor_Slides_Widget extends Widget_Base {
 					'type' => Controls_Manager::SWITCHER,
 					'label' => esc_html__( 'Autoplay', 'dots-elementor' ),
 					'default' => 'yes',
+					'frontend_available' => true,
+				],
+			);
+
+			$this->add_control(
+				'pause_on_hover',
+				[
+					'type' => Controls_Manager::SWITCHER,
+					'label' => esc_html__( 'Pause on Hover', 'dots-elementor' ),
+					'default' => 'yes',
+					'condition' => [
+						'autoplay' => 'yes',
+					],
 					'frontend_available' => true,
 				],
 			);
@@ -172,9 +184,9 @@ class Elementor_Slides_Widget extends Widget_Base {
 				[
 					'type' => Controls_Manager::SWITCHER,
 					'label' => esc_html__( 'Center Mode', 'dots-elementor' ),
-					'default' => 'yes',
+					'default' => 'no',
 					'frontend_available' => true,
-				]
+				],
 			);
 
 			$this->add_control(
@@ -194,15 +206,11 @@ class Elementor_Slides_Widget extends Widget_Base {
 							'max' => 100,
 						],
 					],
-					'default' => [
-						'unit' => 'px',
-						'size' => 208,
-					],
 					'condition' => [
 						'center_mode' => 'yes',
 					],
 					'frontend_available' => true,
-				]
+				],
 			);
 
 			$this->add_control(
@@ -212,15 +220,26 @@ class Elementor_Slides_Widget extends Widget_Base {
 					'label' => esc_html__( 'Infinite Loop', 'dots-elementor' ),
 					'default' => 'yes',
 					'frontend_available' => true,
-				]
+				],
 			);
 
 			$this->add_control(
-				'transition_speed',
+				'speed',
 				[
 					'type' => Controls_Manager::NUMBER,
-					'label' => esc_html__( 'Transition Speed', 'dots-elementor' ) . ' (ms)',
+					'label' => esc_html__( 'Animation Speed', 'dots-elementor' ) . ' (ms)',
 					'default' => 300,
+					'frontend_available' => true,
+				],
+			);
+
+			$this->add_control(
+				'variable_width',
+				[
+					'type' => Controls_Manager::SWITCHER,
+					'label' => esc_html__( 'Variable Width', 'dots-elementor' ),
+					'default' => 'yes',
+					'return_value' => 'true',
 					'frontend_available' => true,
 				],
 			);
@@ -267,16 +286,12 @@ class Elementor_Slides_Widget extends Widget_Base {
 							'max' => 10,
 						],
 					],
-					'default' => [
-						'unit' => 'rem',
-						'size' => 2,
+					'condition' => [
+						'navigation' => [ 'arrows', 'both' ],
 					],
 					'selectors' => [
 						'{{WRAPPER}} .slick-arrow' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}}',
 						'{{WRAPPER}} .slick-arrow:before' => 'font-size: {{SIZE}}{{UNIT}}; line-height: 1;',
-					],
-					'condition' => [
-						'navigation' => [ 'arrows', 'both' ],
 					],
 				],
 			);
@@ -286,11 +301,11 @@ class Elementor_Slides_Widget extends Widget_Base {
 				[
 					'type' => Controls_Manager::COLOR,
 					'label' => esc_html__( 'Background Color', 'dots-elementor' ),
-					'selectors' => [
-						'{{WRAPPER}} .slick-arrow' => 'background-color: {{VALUE}}',
-					],
 					'condition' => [
 						'navigation' => [ 'arrows', 'both' ],
+					],
+					'selectors' => [
+						'{{WRAPPER}} .slick-arrow' => 'background-color: {{VALUE}}',
 					],
 				],
 			);
@@ -300,11 +315,11 @@ class Elementor_Slides_Widget extends Widget_Base {
 				[
 					'type' => Controls_Manager::COLOR,
 					'label' => esc_html__( 'Color', 'dots-elementor' ),
-					'selectors' => [
-						'{{WRAPPER}} .slick-arrow:before' => 'color: {{VALUE}}',
-					],
 					'condition' => [
 						'navigation' => [ 'arrows', 'both' ],
+					],
+					'selectors' => [
+						'{{WRAPPER}} .slick-arrow:before' => 'color: {{VALUE}}',
 					],
 				],
 			);
@@ -338,15 +353,11 @@ class Elementor_Slides_Widget extends Widget_Base {
 							'max' => 10,
 						],
 					],
-					'default' => [
-						'unit' => 'rem',
-						'size' => .5,
+					'condition' => [
+						'navigation' => [ 'dots', 'both' ],
 					],
 					'selectors' => [
 						'{{WRAPPER}} .slick-dots li' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}}',
-					],
-					'condition' => [
-						'navigation' => [ 'dots', 'both' ],
 					],
 				],
 			);
@@ -356,11 +367,11 @@ class Elementor_Slides_Widget extends Widget_Base {
 				[
 					'type' => Controls_Manager::COLOR,
 					'label' => esc_html__( 'Color', 'dots-elementor' ),
-					'selectors' => [
-						'{{WRAPPER}} .slick-dots li' => 'background-color: {{VALUE}}',
-					],
 					'condition' => [
 						'navigation' => [ 'dots', 'both' ],
+					],
+					'selectors' => [
+						'{{WRAPPER}} .slick-dots li' => 'background-color: {{VALUE}}',
 					],
 				],
 			);
@@ -370,11 +381,11 @@ class Elementor_Slides_Widget extends Widget_Base {
 				[
 					'type' => Controls_Manager::COLOR,
 					'label' => esc_html__( 'Active Color', 'dots-elementor' ),
-					'selectors' => [
-						'{{WRAPPER}} .slick-dots li.slick-active' => 'background-color: {{VALUE}}',
-					],
 					'condition' => [
 						'navigation' => [ 'dots', 'both' ],
+					],
+					'selectors' => [
+						'{{WRAPPER}} .slick-dots li.slick-active' => 'background-color: {{VALUE}}',
 					],
 				],
 			);
@@ -408,7 +419,11 @@ class Elementor_Slides_Widget extends Widget_Base {
 
 			$slide_html .= '<' . $slide_element . ' ' . $slide_attributes . ' class="' . $slide_classname . '">';
 
-			$slide_html .= '<picture class="block max-w-full w-full"><img src="' . $slide['image']['url'] . '" alt="' . $slide['heading'] . '" class="rounded-2" width="720" height="360" loading="eager" /></picture>';
+			$slide_html .= '<picture class="block max-w-full w-full">';
+
+			$slide_html .= '<img src="' . $slide['image']['url'] . '" alt="' . $slide['heading'] . '" class="rounded-2" width="720" height="360" loading="eager" />';
+
+			$slide_html .= '</picture>';
 
 			$slide_html .= '</' . $slide_element . '>';
 
@@ -427,10 +442,7 @@ class Elementor_Slides_Widget extends Widget_Base {
 	protected function content_template() {
 		?>
 		<#
-			var direction        = elementorFrontend.config.is_rtl ? 'rtl' : 'ltr',
-				navi             = settings.navigation,
-				showDots         = ( 'dots' === navi || 'both' === navi ),
-				showArrows       = ( 'arrows' === navi || 'both' === navi );
+			var direction        = elementorFrontend.config.is_rtl ? 'rtl' : 'ltr';
 		#>
 		<div class="slick-slider" dir="{{ direction }}">
 			<# jQuery.each( settings.slides, function( index, slide ) { #>
