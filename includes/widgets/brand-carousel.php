@@ -286,26 +286,13 @@ class Elementor_Brand_Carousel_Widget extends Widget_Base {
 
 		$direction = is_rtl() ? 'rtl' : 'ltr';
 		?>
-		<div class="slick-slider" dir="<?php Utils::print_unescaped_internal_string( $direction ); ?>">
+		<div class="slick-slider px-4 md:px-0" dir="<?php Utils::print_unescaped_internal_string( $direction ); ?>">
 			<?php echo implode( '', $slides ); ?>
 		</div>
 		<?php
 	}
 
 	protected function content_template() {
-		?>
-		<#
-			var direction        = elementorFrontend.config.is_rtl ? 'rtl' : 'ltr';
-		#>
-		<div class="slick-slider" dir="{{ direction }}">
-			<# jQuery.each( settings.slides, function( index, slide ) { #>
-				<div class="elementor-repeater-item-{{ slide._id }}">
-					<picture class="block max-w-full w-full">
-						<img src="{{ slide.image.url }}" alt="{{ slide.heading }}" class="rounded-2" width="720" height="360" loading="eager" />
-					</picture>
-				</div>
-			<# } ); #>
-		</div>
-		<?php
+		//
 	}
 }
