@@ -7,384 +7,75 @@
  * @since 1.0
  */
 
-// Register Product Brand taxonomies.
-function dots_elementor_register_product_brand() {
-	$shop_page_id = wc_get_page_id( 'shop' );
+// Override Functions.
+remove_action( 'woocommerce_before_shop_loop_item','woocommerce_template_loop_product_link_open', 10);
+remove_action( 'woocommerce_after_shop_loop_item','woocommerce_template_loop_product_link_close', 5);
+remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10);
+remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart');
 
-	register_taxonomy(
-		'product_brand',
-		array( 'product' ),
-		apply_filters(
-			'dots_elementor_taxonomy_args_product_brand',
-			array(
-				'hierarchical'          => false,
-				'update_count_callback' => '_wc_term_recount',
-				'label'                 => __( 'Brands', 'dots-elementor'),
-				'labels'                => array(
-					'name'                  => __( 'Product brands', 'dots-elementor' ),
-					'singular_name'         => __( 'Brand', 'dots-elementor' ),
-					'menu_name'             => _x( 'Brands', 'Admin menu name', 'dots-elementor' ),
-					'search_items'          => __( 'Search brands', 'dots-elementor' ),
-					'all_items'             => __( 'All brands', 'dots-elementor' ),
-					'edit_item'             => __( 'Edit brand', 'dots-elementor' ),
-					'update_item'           => __( 'Update brand', 'dots-elementor' ),
-					'add_new_item'          => __( 'Add new brand', 'dots-elementor' ),
-					'new_item_name'         => __( 'New brand name', 'dots-elementor' ),
-					'not_found'             => __( 'No brands found', 'dots-elementor' ),
-					'item_link'             => __( 'Product Brand Link', 'dots-elementor' ),
-					'item_link_description' => __( 'A link to a product brand.', 'dots-elementor' ),
-				),
-				'show_in_rest'          => true,
-				'show_ui'               => true,
-				'query_var'             => true,
-				'capabilities'          => array(
-					'manage_terms' => 'manage_product_terms',
-					'edit_terms'   => 'edit_product_terms',
-					'delete_terms' => 'delete_product_terms',
-					'assign_terms' => 'assign_product_terms',
-				),
-				'rewrite'               => array(
-					'slug'         => get_page_uri( $shop_page_id ),
-					'with_front'   => true,
-					'hierarchical' => false,
-				),
-			),
-		),
-	);
-	register_taxonomy_for_object_type( 'product_brand', 'product' );
-}
-add_action( 'init', 'dots_elementor_register_product_brand' );
+add_action( 'woocommerce_before_shop_loop_item', 'woocommerce_show_product_loop_sale_flash', 10);
+add_action( 'woocommerce_before_shop_loop_item', 'woocommerce_template_loop_product_link_open', 10 );
+add_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_product_link_close', 5 );
 
-// Change messages when a taxonomies is updated.
-function dots_elementor_updated_term_messages( $messages ) {
-	$messages[ 'product_brand' ] = array(
-		0 => '',
-		1 => __( 'Brand added.', 'dots-elementor' ),
-		2 => __( 'Brand deleted.', 'dots-elementor' ),
-		3 => __( 'Brand updated.', 'dots-elementor' ),
-		4 => __( 'Brand not added.', 'dots-elementor' ),
-		5 => __( 'Brand not updated.', 'dots-elementor' ),
-		6 => __( 'Brands deleted.', 'dots-elementor' ),
-	);
+// Calculates discount percentages.
+function dots_presentage_ribbon( $product ) {
+	if ( $product->is_type( 'simple' ) || $product->is_type( 'external' ) ) {
+		$regular_price = $product->get_regular_price();
+		$sale_price = $product->get_sale_price();
 
-	return $messages;
-}
-add_filter( 'term_updated_messages', 'dots_elementor_updated_term_messages' );
+		$ribbon_content = round( ( ( floatval( $regular_price ) - floatval( $sale_price ) ) / floatval( $regular_price ) ) * 100 );
+	} elseif ( $product->is_type( 'variable' ) ) {
+		$available_variations = $product->get_available_variations();
+		$maximumper = 0;
 
-// Enqueue styles and scripts.
-function dots_elementor_admin_styles_scripts() {
-	$screen    = get_current_screen();
-	$screen_id = $screen ? $screen->id : '';
+		for ( $i = 0; $i < count( $available_variations ); ++ $i ) {
+			$variation_id = $available_variations[ $i ]['variation_id'];
+			$variable_product = new WC_Product_Variation( $variation_id );
 
-	wp_enqueue_style( 'dots-admin-style', DOTS_THEME_DIR . 'assets/css/admin.css', [], DOTS_THEME_VERSION );
-
-	if ( in_array( $screen_id, array( 'edit-product_brand' ) ) ) {
-		wp_enqueue_media();
-	}
-}
-add_action( 'admin_enqueue_scripts', 'dots_elementor_admin_styles_scripts' );
-
-// Add product brand logo fields.
-function dots_elementor_product_brand_add_fields() {
-?>
-	<div class="form-field term-logo-wrap">
-
-		<label><?php esc_html_e( 'Logo', 'dots-elementor' ); ?></label>
-		<div id="product_brand_logo" style="float: left; margin-right: 10px;">
-			<img src="<?php echo esc_url( wc_placeholder_img_src() ); ?>" width="60px" height="60px" />
-		</div>
-
-		<div style="line-height: 60px;">
-			<input type="hidden" id="product_brand_logo_id" name="product_brand_logo_id" />
-			<button type="button" class="upload_logo_button button"><?php esc_html_e( 'Upload/Add logo', 'dots-elementor' ); ?></button>
-			<button type="button" class="remove_logo_button button"><?php esc_html_e( 'Remove logo', 'dots-elementor' ); ?></button>
-		</div>
-
-		<script type="text/javascript">
-			if ( ! jQuery( '#product_brand_logo_id' ).val() ) {
-				jQuery( '.remove_logo_button' ).hide();
+			if ( ! $variable_product->is_on_sale() ) {
+				continue;
 			}
 
-			var file_frame;
+			$regular_price = $variable_product->get_regular_price();
+			$sale_price = $variable_product->get_sale_price();
+			$percentage = round( ( ( floatval( $regular_price ) - floatval( $sale_price ) ) / floatval( $regular_price ) ) * 100 );
 
-			jQuery( document ).on( 'click', '.upload_logo_button', function( event ) {
+			if ( $percentage > $maximumper ) {
+				$maximumper = $percentage;
+			}
+		}
 
-				event.preventDefault();
-
-				if ( file_frame ) {
-					file_frame.open();
-
-					return;
-				}
-
-				file_frame = wp.media.frames.downloadable_file = wp.media({
-					title: '<?php esc_html_e( 'Choose an logo', 'dots-elementor' ); ?>',
-					button: {
-						text: '<?php esc_html_e( 'Use logo', 'dots-elementor' ); ?>'
-					},
-					multiple: false,
-				});
-
-				file_frame.on( 'select', function() {
-					var attachment = file_frame.state().get( 'selection' ).first().toJSON();
-					var attachment_logo = attachment.sizes.logo || attachment.sizes.full;
-
-					jQuery( '#product_brand_logo_id' ).val( attachment.id );
-					jQuery( '#product_brand_logo' ).find( 'img' ).attr( 'src', attachment_logo.url );
-					jQuery( '.remove_logo_button' ).show();
-				});
-
-				file_frame.open();
-			});
-
-			jQuery( document ).on( 'click', '.remove_logo_button', function() {
-				jQuery( '#product_brand_logo' ).find( 'img' ).attr( 'src', '<?php echo esc_js( wc_placeholder_img_src() ); ?>' );
-				jQuery( '#product_brand_logo_id' ).val( '' );
-				jQuery( '.remove_logo_button' ).hide();
-
-				return false;
-			});
-
-			jQuery( document ).ajaxComplete( function( event, request, options ) {
-				if ( request && 4 === request.readyState && 200 === request.status &&
-					options.data && 0 <= options.data.indexOf( 'action=add-tag' ) ) {
-
-					var res = wpAjax.parseAjaxResponse( request.responseXML, 'ajax-response' );
-					if ( ! res || res.errors ) {
-						return;
-					}
-
-					jQuery( '#product_brand_logo' ).find( 'img' ).attr( 'src', '<?php echo esc_js(wc_placeholder_img_src()); ?>' );
-					jQuery( '#product_brand_logo_id' ).val( '' );
-					jQuery( '.remove_logo_button' ).hide();
-
-					return;
-				}
-			});
-		</script>
-
-		<div class="clear"></div>
-
-	</div>
-<?php
-}
-add_action( 'product_brand_add_form_fields', 'dots_elementor_product_brand_add_fields', 10, 2 );
-
-// Edit product brand logo fields.
-function dots_elementor_product_brand_edit_fields( $term ) {
-	$logo_id = absint(get_term_meta( $term->term_id, 'logo_id', true ) );
-
-	if ( $logo_id ) {
-		$logo = wp_get_attachment_thumb_url( $logo_id );
+		$ribbon_content = sprintf( __( '%s', 'dots-elementor' ), $maximumper );
 	} else {
-		$logo = wc_placeholder_img_src();
-	}
-?>
-	<tr class="form-field term-logo-wrap">
+		$ribbon_content = __( 'Sale!', 'dots-elementor' );
 
-		<th scope="row" valign="top">
-			<label><?php esc_html_e( 'Logo', 'dots-elementor' ); ?></label>
-		</th>
-
-		<td>
-			<div id="product_brand_logo" style="float: left; margin-right: 10px;">
-				<img src="<?php echo esc_url( $logo ); ?>" width="60px" height="60px" />
-			</div>
-
-			<div style="line-height: 60px;">
-				<input type="hidden" id="product_brand_logo_id" name="product_brand_logo_id" value="<?php echo esc_attr( $logo_id ); ?>" />
-				<button type="button" class="upload_logo_button button"><?php esc_html_e( 'Upload/Add logo', 'dots-elementor' ); ?></button>
-				<button type="button" class="remove_logo_button button"><?php esc_html_e( 'Remove logo', 'dots-elementor' ); ?></button>
-			</div>
-
-			<script type="text/javascript">
-				if ( '0' === jQuery( '#product_brand_logo_id' ).val()) {
-					jQuery( '.remove_logo_button' ).hide();
-				}
-
-				var file_frame;
-
-				jQuery( document ).on( 'click', '.upload_logo_button', function( event ) {
-
-					event.preventDefault();
-
-					if ( file_frame ) {
-						file_frame.open();
-
-						return;
-					}
-
-					file_frame = wp.media.frames.downloadable_file = wp.media({
-						title: '<?php esc_html_e( 'Choose an logo', 'dots-elementor' ); ?>',
-						button: {
-							text: '<?php esc_html_e( 'Use logo', 'dots-elementor' ); ?>'
-						},
-						multiple: false,
-					});
-
-					file_frame.on( 'select', function() {
-						var attachment = file_frame.state().get( 'selection' ).first().toJSON();
-						var attachment_logo = attachment.sizes.logo || attachment.sizes.full;
-
-						jQuery( '#product_brand_logo_id' ).val( attachment.id );
-						jQuery( '#product_brand_logo' ).find( 'img' ).attr( 'src', attachment_logo.url );
-						jQuery( '.remove_logo_button' ).show();
-					});
-
-					file_frame.open();
-				});
-
-				jQuery( document ).on( 'click', '.remove_logo_button', function() {
-					jQuery( '#product_brand_logo' ).find( 'img' ).attr( 'src', '<?php echo esc_js( wc_placeholder_img_src() ); ?>' );
-					jQuery( '#product_brand_logo_id' ).val( '' );
-					jQuery( '.remove_logo_button' ).hide();
-
-					return false;
-				});
-			</script>
-
-			<div class="clear"></div>
-		</td>
-
-	</tr>
-<?php
-}
-add_action( 'product_brand_edit_form_fields', 'dots_elementor_product_brand_edit_fields', 10 );
-
-// Save product brand fields.
-function dots_elementor_product_brand_save_fields( $term_id, $tt_id = '', $taxonomy = '' ) {
-	if ( isset( $_POST['product_brand_logo_id'] ) && 'product_brand' === $taxonomy ) {
-		update_term_meta( $term_id, 'logo_id', absint( $_POST['product_brand_logo_id'] ) );
-	}
-}
-add_action( 'created_term', 'dots_elementor_product_brand_save_fields', 10, 3 );
-add_action( 'edit_term', 'dots_elementor_product_brand_save_fields', 10, 3 );
-
-// Add product brand logo column added to brands admin.
-function dots_elementor_product_brand_columns( $columns ) {
-	$new_columns = array();
-
-	if ( isset( $columns['cb'] ) ) {
-		$new_columns['cb'] = $columns['cb'];
-		unset( $columns['cb'] );
+		return $ribbon_content;
 	}
 
-	$new_columns['logo'] = __( 'Logo', 'dots-elementor' );
-	$columns = array_merge( $new_columns, $columns );
-
-	return $columns;
+	return str_replace( '{value}', $ribbon_content, '-{value}%' );
 }
-add_filter( 'manage_edit-product_brand_columns', 'dots_elementor_product_brand_columns' );
 
-// Add product brand logo column value added to brands admin.
-function dots_elementor_product_brand_column( $columns, $column, $id ) {
-	if ( 'logo' === $column ) {
-		$logo_id = get_term_meta( $id, 'logo_id', true );
+// Override Variable Price HTML Outputs.
+function dots_variable_price_html( $price, $product ){
+	global $woocommerce_loop;
 
-		if ( $logo_id ) {
-			$logo = wp_get_attachment_thumb_url( $logo_id );
+	if ( ( is_product() && isset($woocommerce_loop['name']) && ! empty($woocommerce_loop['name']) ) || ! is_product() ) {
+		if ( $product->is_on_sale() ) {
+			$regular_price_min = $product->get_variation_regular_price( 'min', true );
+			$active_price_min = $product->get_variation_price( 'min', true );
+
+			$active_price_ins_html = sprintf( '<ins>%s</ins>', wc_price( $active_price_min ) );
+			$regular_price_del_html = sprintf( '<del>%s</del>', wc_price( $regular_price_min ) );
+
+			$price = sprintf( '%s %s', $active_price_ins_html, $regular_price_del_html );
 		} else {
-			$logo = wc_placeholder_img_src();
-		}
+			$active_price_min = $product->get_variation_price( 'min', true );
+			$active_price_ins_html = sprintf( '<ins>%s</ins>', wc_price( $active_price_min ) );
 
-		// Prevent esc_url from breaking spaces in urls for logo embeds. Ref: https://core.trac.wordpress.org/ticket/23605 .
-		$logo = str_replace( ' ', '%20', $logo );
-		$columns .= '<img src="' . esc_url( $logo ) . '" alt="' . esc_attr__( 'Logo', 'dots-elementor' ) . '" class="wp-post-image" width="48" height="48" />';
-	}
-
-	return $columns;
-}
-add_filter( 'manage_product_brand_custom_column', 'dots_elementor_product_brand_column', 10, 3 );
-
-// Add callback arguments for custom metabox.
-function dots_elementor_add_metabox_args( $args ) {
-	class DOTS_Elementor_Meta_Box_Product_Brands {
-		public static function output( $post, $box ) {
-			$defaults = array( 'taxonomy' => 'category' );
-
-			if ( ! isset( $box['args'] ) || ! is_array( $box['args'] ) ) {
-				$args = array();
-			} else {
-				$args = $box['args'];
-			}
-
-			$parsed_args = wp_parse_args( $args, $defaults );
-			$tax_name    = $parsed_args['taxonomy'];
-			$taxonomy    = get_taxonomy( $parsed_args['taxonomy'] );
-?>
-			<div id="taxonomy-<?php echo $tax_name; ?>" class="categorydiv">
-
-				<ul id="<?php echo $tax_name; ?>-tabs" class="category-tabs">
-					<li class="tabs">
-						<a href="#<?php echo $tax_name; ?>-all"><?php echo $taxonomy->labels->all_items; ?></a>
-					</li>
-					<li class="hide-if-no-js">
-						<a href="#<?php echo $tax_name; ?>-pop"><?php echo esc_html( $taxonomy->labels->most_used ); ?></a>
-					</li>
-				</ul>
-
-				<div id="<?php echo $tax_name; ?>-pop" class="tabs-panel" style="display: none;">
-					<ul id="<?php echo $tax_name; ?>checklist-pop" class="categorychecklist form-no-clear">
-						<?php $popular_ids = wp_popular_terms_checklist( $tax_name ); ?>
-					</ul>
-				</div>
-
-				<div id="<?php echo $tax_name; ?>-all" class="tabs-panel">
-					<?php
-						$name = ( 'category' === $tax_name ) ? 'post_category' : 'tax_input[' . $tax_name . ']';
-						echo "<input type='hidden' name='{$name}[]' value='0' />";
-					?>
-					<ul
-						id="<?php echo $tax_name; ?>checklist"
-						data-wp-lists="list:<?php echo $tax_name; ?>"
-						class="categorychecklist form-no-clear"
-					>
-						<?php
-							wp_terms_checklist( $post->ID, array(
-								'taxonomy'     => $tax_name,
-								'popular_cats' => $popular_ids,
-							) );
-						?>
-					</ul>
-				</div>
-
-			</div>
-
-<?php
+			$price = sprintf( '%s', $active_price_ins_html );
 		}
 	}
 
-	if ( ! isset( $args['meta_box_cb'] ) ) {
-		$args['meta_box_cb']          = 'DOTS_Elementor_Meta_Box_Product_Brands::output';
-		$args['meta_box_sanitize_cb'] = 'taxonomy_meta_box_sanitize_cb_checkboxes';
-	}
-
-	return $args;
+	return $price;
 }
-add_filter( 'dots_elementor_taxonomy_args_product_brand', 'dots_elementor_add_metabox_args' );
-
-// Brands column added to products admin.
-function dots_elementor_admin_product_brand_columns( $columns ) {
-	$columns['product_brand'] = __( 'Brands', 'dots-elementor' );
-	return array_slice( $columns, 0, 7, true ) + array( 'product_brand' => 'Brands' ) + array_slice( $columns, 7, count( $columns ) - 7, true );
-}
-add_filter( 'manage_edit-product_columns', 'dots_elementor_admin_product_brand_columns' );
-
-// Brands column value added to products admin.
-function dots_elementor_admin_product_brand_column( $column, $product_id ) {
-	if ( 'product_brand' === $column  ) {
-		$terms = get_the_terms( $product_id , 'product_brand' );
-
-		if ( ! $terms ) {
-			echo '<span class="na">&ndash;</span>';
-		} else {
-			$termlist = array();
-			foreach ( $terms as $term ) {
-				$termlist[] = '<a href="' . esc_url( admin_url( 'edit.php?product_brand=' . $term->slug . '&post_type=product' ) ) . ' ">' . esc_html( $term->name ) . '</a>';
-			}
-
-			echo apply_filters( 'woocommerce_admin_product_term_list', implode( ', ', $termlist ), 'product_brand', $product_id , $termlist, $terms );
-		}
-	}
-}
-add_filter( 'manage_product_posts_custom_column', 'dots_elementor_admin_product_brand_column', 10, 7 );
+add_filter( 'woocommerce_variable_price_html', 'dots_variable_price_html', 100, 2 );
