@@ -85,10 +85,10 @@ function dots_elementor_setup() {
 		'name'           => __( 'Main Sidebar', 'dots-elementor' ),
 		'id'             => 'main-sidebar',
 		'description'    => __( 'Widgets in this area will be shown on all posts and pages.', 'dots-elementor' ),
-		'before_widget'  => '<div id="%1$s" class="px-4 %2$s">',
-		'after_widget'   => '</div>',
-		'before_title'   => '<div class="text-primary-1 text-sm font-bold">',
-		'after_title'    => '</div>',
+		'before_widget'  => '<div>',
+		'after_widget'   => '<div class="px-4"><div class="border-b-1 border-neutral-800 mt-4 mb-2"></div></div></div>',
+		'before_title'   => '<div class="flex flex-wrap items-center px-4"><span class="text-primary-1 text-sm font-bold">',
+		'after_title'    => '</span></div>',
 	) );
 }
 add_action( 'after_setup_theme', 'dots_elementor_setup' );
@@ -156,6 +156,9 @@ if ( class_exists( 'woocommerce' ) ) {
 
 	// Override functions.
 	require_once DOTS_THEME_DIR . '/includes/woocommerce-functions.php';
+
+	// Custom widgets.
+	require_once DOTS_THEME_DIR . '/includes/widget-functions.php';
 }
 
 // Check whether to display the page title.
