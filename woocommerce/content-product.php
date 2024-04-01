@@ -19,7 +19,7 @@ if ( empty( $product ) || ! $product->is_visible() ) {
 
 		<?php do_action( 'woocommerce_before_shop_loop_item' ); ?>
 
-		<div class="card product-card-container cursor-pointer bg-neutral-900 relative rounded-2">
+		<div class="product-card-container cursor-pointer bg-neutral-900 relative rounded-2">
 			<div class="product-card relative">
 				<div class="relative pt-6 px-2 md:px-4">
 
