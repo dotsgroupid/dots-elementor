@@ -79,6 +79,17 @@ function dots_elementor_setup() {
 	add_theme_support( 'wc-product-gallery-zoom' ); // Enabling WooCommerce product gallery zoom.
 	add_theme_support( 'wc-product-gallery-lightbox' ); // Enabling WooCommerce product gallery lightbox.
 	add_theme_support( 'wc-product-gallery-slider' ); // Enabling WooCommerce product gallery slider.
+
+	// Add a sidebar.
+	register_sidebar( array(
+		'name'           => __( 'Main Sidebar', 'dots-elementor' ),
+		'id'             => 'main-sidebar',
+		'description'    => __( 'Widgets in this area will be shown on all posts and pages.', 'dots-elementor' ),
+		'before_widget'  => '<div id="%1$s" class="px-4 %2$s">',
+		'after_widget'   => '</div>',
+		'before_title'   => '<div class="text-primary-1 text-sm font-bold">',
+		'after_title'    => '</div>',
+	) );
 }
 add_action( 'after_setup_theme', 'dots_elementor_setup' );
 
