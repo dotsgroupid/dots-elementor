@@ -21,8 +21,8 @@ add_action( 'elementor/elements/categories_registered', 'dots_elementor_register
 
 // Register Elementor widgets.
 function dots_elementor_register_widget( $widgets_manager ) {
-	require_once DOTS_THEME_DIR . '/includes/widgets/banner-slides.php';
-	require_once DOTS_THEME_DIR . '/includes/widgets/brand-carousel.php';
+	require_once DOTS_THEME_DIR . '/includes/elementor/banner-slides.php';
+	require_once DOTS_THEME_DIR . '/includes/elementor/brand-carousel.php';
 
 	$widgets_manager->register( new \Elementor_Banner_Slides_Widget() );
 	$widgets_manager->register( new \Elementor_Brand_Carousel_Widget() );
