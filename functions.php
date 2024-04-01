@@ -140,6 +140,10 @@ if ( did_action( 'elementor/loaded' ) ) {
 
 // Custom WooCommerce Plugins Functions.
 if ( class_exists( 'woocommerce' ) ) {
+	// Custom product brands.
+	require_once DOTS_THEME_DIR . '/includes/brand-functions.php';
+
+	// Override functions.
 	require_once DOTS_THEME_DIR . '/includes/woocommerce-functions.php';
 }
 

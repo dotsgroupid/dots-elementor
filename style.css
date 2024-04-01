@@ -57,7 +57,8 @@ body {
  *
  * 1. Color
  * 2. Border
- * 3. Display
+ * 3. Fonts
+ * 4. Display
  */
 
 /* 1. Color */
@@ -126,7 +127,17 @@ body {
 	border-radius: 1.5rem;
 }
 
-/* 3. Display */
+/*
+ * 3. Fonts
+ */
+.text-xxs {
+	font-size: 0.625rem;
+	line-height: 0.75rem;
+}
+
+/*
+ * 4. Display
+ */
 .custom-area .lower {
 	max-width: calc(100vw - 1rem);
 }
@@ -139,6 +150,10 @@ body {
 	width: 100%;
 }
 
+.w-1-2 {
+	width: 50%;
+}
+
 .h-38 {
 	height: 9.5rem;
 }
@@ -147,6 +162,10 @@ body {
 	.container {
 		max-width: 640px;
 	}
+
+	.sm\:w-1-3 {
+		width: 33.33333333%;
+	}
 }
 
 @media (min-width: 768px) {
@@ -154,12 +173,20 @@ body {
 	.md\:container {
 		max-width: 768px;
 	}
+
+	.md\:w-1-4 {
+		width: 25%;
+	}
 }
 
 @media (min-width: 1024px) {
 	.container,
 	.lg\:container {
 		max-width: 1024px;
+	}
+
+	.lg\:w-1-5 {
+		width: 20%;
 	}
 }
 
@@ -220,41 +247,6 @@ body {
 }
 
 /*
- * WooCommerce
- */
-.woocommerce ul.products li.product {
-	min-height: 17rem;
-}
-
-.woocommerce ul.products li.product a img {
-	margin: 0px;
-}
-
-.woocommerce ul.products li.product .woocommerce-loop-product__title {
-	-webkit-line-clamp: 2;
-	-webkit-box-orient: vertical;
-	display: -webkit-box;
-	height: 3rem;
-	padding-top: 0.5rem;
-	margin-top: 1rem;
-	margin-bottom: 0.25rem;
-	overflow: hidden;
-}
-
-.woocommerce ul.products li.product .price ins {
-	text-decoration: none;
-}
-
-.woocommerce ul.products li.product .price del {
-	display: block;
-	opacity: 1;
-}
-
-.product-card-container .product-card .box-img {
-	min-height: 10.5rem;
-}
-
-/*
  * Ribbon
  */
 .ribbon {
@@ -270,6 +262,9 @@ body {
 	border-top-left-radius: 100%;
 }
 
+/*
+ * Others
+ */
 .social-feed figcaption p {
 	-webkit-line-clamp: 2;
 	-webkit-box-orient: vertical;
@@ -343,10 +338,6 @@ body {
 
 	.brands .brand img {
 		width: 100px;
-	}
-
-	.woocommerce ul.products li.product a img {
-		min-height: 12rem;
 	}
 }
 
