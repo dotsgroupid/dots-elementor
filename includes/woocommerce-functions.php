@@ -19,7 +19,6 @@ remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_singl
 remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_excerpt', 20 );
 remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
 remove_action( 'woocommerce_single_variation', 'woocommerce_single_variation', 10 );
-// remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30 );
 remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );
 
 add_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 10 );
@@ -72,13 +71,13 @@ function dots_variable_price_html( $price, $product ){
 			$regular_price_min = $product->get_variation_regular_price( 'min', true );
 			$active_price_min = $product->get_variation_price( 'min', true );
 
-			$active_price_ins_html = sprintf( '<div class="text-primary-1 text-sm font-black leading-6">%s</div>', wc_price( $active_price_min ) );
-			$regular_price_del_html = sprintf( '<div class="text-neutral-600 text-xxs font-medium leading-1 line-through">%s</div>', wc_price( $regular_price_min ) );
+			$active_price_ins_html = sprintf( '<ins>%s</ins>', wc_price( $active_price_min ) );
+			$regular_price_del_html = sprintf( '<del>%s</del>', wc_price( $regular_price_min ) );
 
 			$price = sprintf( '%s %s', $active_price_ins_html, $regular_price_del_html );
 		} else {
 			$active_price_min = $product->get_variation_price( 'min', true );
-			$active_price_ins_html = sprintf( '<div class="text-primary-1 text-sm font-black leading-6">%s</div>', wc_price( $active_price_min ) );
+			$active_price_ins_html = sprintf( '<ins>%s</ins>', wc_price( $active_price_min ) );
 
 			$price = sprintf( '%s', $active_price_ins_html );
 		}

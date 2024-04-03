@@ -9,8 +9,10 @@
 
 global $product;
 
-$regular_price_min = $product->get_variation_regular_price( 'min', true );
-$active_price_min = $product->get_variation_price( 'min', true );
+if ( $product->is_type( 'variable' ) ) {
+	$regular_price_min = $product->get_variation_regular_price( 'min', true );
+	$active_price_min = $product->get_variation_price( 'min', true );
+}
 
 ?>
 
@@ -24,5 +26,5 @@ $active_price_min = $product->get_variation_price( 'min', true );
 			</div>
 		</div>
 		<?php } ?>
-		<div class="heading-4 text-primary-1 mr-2 md:mr-0"><?php echo wc_price( $active_price_min ); ?></div>
+		<div class="heading-4 text-primary-1 mr-2 md:mr-0"><?php echo wc_price( $product->get_price() ); ?></div>
 	</div>

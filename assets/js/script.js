@@ -14,8 +14,8 @@ jQuery( function ( $ ) {
 		event.preventDefault();
 
 		var $this = $( this ),
-			$value = $this.siblings( '.value-wrapper' ),
-			current = parseInt( $value.text(), 10 ),
+			$value = $this.siblings( '.qty' ),
+			current = parseInt( $value.val(), 10 ),
 			min = 1,
 			max = current + 1;
 
@@ -25,7 +25,7 @@ jQuery( function ( $ ) {
 			$( '.stepper-wrapper .minus-wrapper' ).addClass( 'btn-disabled border-neutral-700 text-neutral-700' );
 			$( '.stepper-wrapper .di-minus' ).addClass( 'text-neutral-600' );
 
-			$value.text( current - 1 );
+			$value.val( current - 1 );
 			$value.trigger( 'change' );
 		}
 
@@ -35,7 +35,7 @@ jQuery( function ( $ ) {
 			$( '.stepper-wrapper .minus-wrapper' ).addClass( 'btn-disabled border-neutral-500 text-neutral-500' );
 			$( '.stepper-wrapper .di-minus' ).addClass( 'text-neutral-100' );
 
-			$value.text( current + 1 );
+			$value.val( current + 1 );
 			$value.trigger( 'change' );
 		}
 	} );

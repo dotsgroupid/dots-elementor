@@ -12,6 +12,7 @@ $footer_nav_menu = wp_nav_menu( [
 	'fallback_cb' => false,
 	'echo' => false,
 ] );
+
 ?>
 
 <footer id="site-footer" class="site-footer">

@@ -13,7 +13,6 @@ if ( ! empty( $breadcrumb ) ) {
 		<ul class="text-neutral-600 text-xs font-bold leading-4 flex gap-1">';
 
 	foreach ( $breadcrumb as $key => $crumb ) {
-
 		if ( ! empty( $crumb[1] ) && sizeof( $breadcrumb ) !== $key + 1 ) {
 			if ( $key == 0 ) {
 				echo '<li>
@@ -31,7 +30,6 @@ if ( ! empty( $breadcrumb ) ) {
 				<span class="text-neutral-100">' . esc_html( $crumb[0] ) . '</span>
 			</li>';
 		}
-
 	}
 
 	echo '</ul>

@@ -476,6 +476,24 @@ body {
 	overflow: hidden;
 }
 
+ins span.woocommerce-Price-amount,
+.product-card-container .product-card span.woocommerce-Price-amount {
+	color: #f68522;
+	font-size: 0.875rem;
+	font-weight: 900;
+	line-height: 1.5rem;
+}
+
+del span.woocommerce-Price-amount,
+.product-card-container .product-card del span.woocommerce-Price-amount {
+	color: #757575;
+	font-size: 0.625rem;
+	font-weight: 500;
+	line-height: 0.75rem;
+	text-decoration: line-through;
+	display: block;
+}
+
 /*
  * Badge
  */
@@ -573,6 +591,33 @@ body {
 
 .stepper-wrapper button {
 	border-color: #424242 !important;
+}
+
+.stepper-wrapper .qty {
+	cursor: default;
+	background-color: #424242;
+	color: #e0e0e0;
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+	text-align: center;
+	width: 3rem;
+	height: 2.25rem;
+}
+
+/* Chrome, Safari, Edge, Opera */
+.stepper-wrapper .qty::-webkit-outer-spin-button,
+.stepper-wrapper .qty::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0px;
+}
+
+/* Firefox */
+.stepper-wrapper .qty[type="number"] {
+	-moz-appearance: textfield;
+}
+
+.stepper-wrapper .qty:focus-visible {
+	outline: none;
 }
 
 /*

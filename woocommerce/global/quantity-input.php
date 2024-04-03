@@ -16,13 +16,13 @@
 					<span class="di-minus text-neutral-600"></span>
 				</button>
 				<input
-					type="hidden"
+					type="number"
 					id="<?php echo esc_attr( $input_id ); ?>"
 					class="<?php echo esc_attr( join( ' ', (array) $classes ) ); ?>"
 					name="<?php echo esc_attr( $input_name ); ?>"
 					value="<?php echo esc_attr( $input_value ); ?>"
+					readonly
 				/>
-				<div class="value-wrapper bg-neutral-800 text-neutral-100 text-sm flex items-center justify-center w-12 h-9">1</div>
 				<button class="plus-wrapper btn btn-sm btn-ghost btn-ghost-grey bg-transparent border-1 border-solid border-neutral-500 rounded rounded-l-0 rounded-r-1 text-neutral-500 text-sm relative w-9 h-9 pt-1 overflow-hidden">
 					<span class="di-plus text-neutral-100"></span>
 				</button>
