@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The template for displaying product content within loops.
  *
@@ -8,7 +9,6 @@
 
 global $product;
 
-// Ensure visibility.
 if ( empty( $product ) || ! $product->is_visible() ) {
 	return;
 }

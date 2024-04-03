@@ -17,6 +17,7 @@ if ( $product->is_type( 'variable' ) ) {
 ?>
 
 	<div class="flex flex-row-reverse items-center w-max md:block md:flex-row">
+
 		<?php if ( $product->is_on_sale() ) { ?>
 		<div class="md:mb-0.5">
 			<div class="flex items-center">
@@ -26,5 +27,7 @@ if ( $product->is_type( 'variable' ) ) {
 			</div>
 		</div>
 		<?php } ?>
+
 		<div class="heading-4 text-primary-1 mr-2 md:mr-0"><?php echo wc_price( $product->get_price() ); ?></div>
+
 	</div>

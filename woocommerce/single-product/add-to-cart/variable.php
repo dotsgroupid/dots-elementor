@@ -33,6 +33,7 @@ do_action( 'woocommerce_before_add_to_cart_form' );
 
 			<div class="variations">
 				<div>
+
 					<?php
 						foreach ( $attributes as $attribute_name => $options ) {
 							if ($attribute_name == 'pa_warna') {
@@ -55,12 +56,14 @@ do_action( 'woocommerce_before_add_to_cart_form' );
 							}
 						}
 					?>
+
 				</div>
 			</div>
 
 			<?php do_action( 'woocommerce_after_variations_table' ); ?>
 
 			<div class="border-b-1 border-neutral-900 my-4">
+
 				<?php
 					do_action( 'woocommerce_before_single_variation' );
 
@@ -68,6 +71,7 @@ do_action( 'woocommerce_before_add_to_cart_form' );
 
 					do_action( 'woocommerce_after_single_variation' );
 				?>
+
 			</div>
 
 		<?php
