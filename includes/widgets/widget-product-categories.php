@@ -121,7 +121,7 @@ class Dots_Widget_Product_Categories extends WC_Widget {
 		) );
 ?>
 
-		<div id="filter-navigation" class="text-neutral-300 px-4 mt-3 mb-2">
+		<div id="filter-navigation" class="text-neutral-100 px-4 mt-3 mb-2">
 			<ul class="filter-nav-list">
 				<?php
 					foreach( $categories as $category ) {

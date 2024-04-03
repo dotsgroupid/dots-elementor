@@ -10,7 +10,7 @@ do_action( 'woocommerce_widget_price_filter_start', $args );
 
 ?>
 
-<div class="text-neutral-300 px-4 mt-3 mb-2">
+<div class="text-neutral-100 px-4 mt-3 mb-2">
 	<form action="<?php echo esc_url( $form_action ); ?>" method="get">
 		<div id="input-price" class="flex items-center">
 			<fieldset class="text-input price-range border-none relative p-0">
@@ -28,7 +28,7 @@ do_action( 'woocommerce_widget_price_filter_start', $args );
 			</fieldset>
 		</div>
 		<p class="mt-1 mb-3"></p>
-		<button type="submit" class="mw-ripple-effect price-range-btn bg-primary-1 btn btn-sm btn-filled rounded text-neutral-1000 text-sm font-bold tracking-wider relative overflow-hidden w-full" style="font-size: 12px;"><?php echo esc_html__( 'Terapkan', 'woocommerce' ); ?></button>
+		<button type="submit" class="price-range-btn bg-primary-1 btn btn-sm btn-filled rounded text-neutral-1000 text-sm font-bold tracking-wider relative overflow-hidden w-full" style="font-size: 12px;"><?php echo esc_html__( 'Terapkan', 'woocommerce' ); ?></button>
 	</form>
 </div>
 

@@ -28,7 +28,7 @@ if ( ! empty( $breadcrumb ) ) {
 		} else {
 			echo '<li class="flex gap-1 items-center">
 				<span class="di-chevron-right"></span>
-				<span class="text-neutral-300">' . esc_html( $crumb[0] ) . '</span>
+				<span class="text-neutral-100">' . esc_html( $crumb[0] ) . '</span>
 			</li>';
 		}
 

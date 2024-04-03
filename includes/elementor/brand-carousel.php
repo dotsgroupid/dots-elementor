@@ -268,7 +268,7 @@ class Elementor_Brand_Carousel_Widget extends Widget_Base {
 
 			$slide_html .= '<div class="p-0.5 md:p-2">';
 
-			$slide_html .= '<a href="' . get_term_link( $brand ) . '" class="brand brand-card border-1 border-solid border-neutral-800 rounded-2 flex justify-center relative">';
+			$slide_html .= '<a href="' . get_term_link( $brand ) . '" class="brand brand-card border-1 border-solid new-ds-border-neutral-800 rounded-2 flex justify-center relative">';
 
 			$slide_html .= '<picture class="flex items-center justify-center">';
 
