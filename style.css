@@ -589,6 +589,24 @@ del span.woocommerce-Price-amount,
 	margin-bottom: unset;
 }
 
+.wcboost-variation-swatches__item {
+	border-width: 1px;
+	border-color: #313131;
+	box-shadow: none;
+	padding: 0px;
+	margin-top: 0.25rem;
+}
+
+.wcboost-variation-swatches__item,
+.wcboost-variation-swatches--rounded .wcboost-variation-swatches__item img {
+	border-radius: 0.5rem !important;
+}
+
+.wcboost-variation-swatches__item.selected {
+	border-color: #f68522;
+	box-shadow: none;
+}
+
 .stepper-wrapper button {
 	border-color: #424242 !important;
 }
