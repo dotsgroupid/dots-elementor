@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Shop breadcrumb.
  *
@@ -8,7 +9,7 @@
 
 if ( ! empty( $breadcrumb ) ) {
 
-	echo '<nav class="qa-breadcrumb hidden my-6 md:block" aria-label="breadcrumbs">
+	echo '<nav class="hidden my-6 md:block" aria-label="breadcrumbs">
 		<ul class="text-neutral-600 text-xs font-bold leading-4 flex gap-1">';
 
 	foreach ( $breadcrumb as $key => $crumb ) {

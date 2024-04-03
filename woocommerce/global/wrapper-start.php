@@ -10,4 +10,4 @@
 ?>
 
 <div id="primary" class="mw-layout-content">
-	<main id="main" class="product-list qa-product-list-page container mx-auto" role="main">
+	<main id="main" class="container mx-auto" role="main">

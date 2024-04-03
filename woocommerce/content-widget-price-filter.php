@@ -6,8 +6,6 @@
  * @since 1.0
  */
 
-defined( 'ABSPATH' ) || exit;
-
 do_action( 'woocommerce_widget_price_filter_start', $args );
 
 ?>
@@ -30,7 +28,7 @@ do_action( 'woocommerce_widget_price_filter_start', $args );
 			</fieldset>
 		</div>
 		<p class="mt-1 mb-3"></p>
-		<button type="submit" class="mw-ripple-effect price-range-btn bg-primary-1 btn btn-sm btn-filled rounded text-neutral-1000 text-sm font-bold tracking-wider relative overflow-hidden w-full" style="font-size: 12px;">Terapkan</button>
+		<button type="submit" class="mw-ripple-effect price-range-btn bg-primary-1 btn btn-sm btn-filled rounded text-neutral-1000 text-sm font-bold tracking-wider relative overflow-hidden w-full" style="font-size: 12px;"><?php echo esc_html__( 'Terapkan', 'woocommerce' ); ?></button>
 	</form>
 </div>
 
