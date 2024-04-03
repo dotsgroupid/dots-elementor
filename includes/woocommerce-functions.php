@@ -13,6 +13,18 @@ remove_action( 'woocommerce_after_shop_loop_item','woocommerce_template_loop_pro
 remove_action( 'woocommerce_shop_loop_item_title', 'woocommerce_template_loop_product_title', 10 );
 remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
 
+remove_action( 'woocommerce_before_single_product_summary', 'woocommerce_show_product_sale_flash', 10 );
+remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_rating', 10 );
+remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_price', 10 );
+remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_excerpt', 20 );
+remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
+remove_action( 'woocommerce_single_variation', 'woocommerce_single_variation', 10 );
+// remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30 );
+remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );
+
+add_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 10 );
+add_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_price', 20 );
+
 // Calculates discount percentages.
 function dots_presentage_ribbon( $product ) {
 	if ( $product->is_type( 'simple' ) || $product->is_type( 'external' ) ) {
@@ -76,7 +88,7 @@ function dots_variable_price_html( $price, $product ){
 }
 add_filter( 'woocommerce_variable_price_html', 'dots_variable_price_html', 100, 2 );
 
-// Override Products Link.
+// Override Product Loop Link.
 function dots_template_loop_product_link_open() {
 	global $product;
 
@@ -91,6 +103,7 @@ function dots_template_loop_product_link_close() {
 }
 add_filter( 'woocommerce_after_shop_loop_item', 'dots_template_loop_product_link_close', 100, 2 );
 
+// Override Product Loop Title.
 function dots_template_loop_product_title() {
 	echo '<p class="product-name text-neutral-0 text-sm font-normal leading-6 h-12 mb-1">' . get_the_title() . '</p>';
 }
