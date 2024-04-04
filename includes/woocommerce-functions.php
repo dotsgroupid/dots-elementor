@@ -11,6 +11,7 @@
 remove_action( 'woocommerce_before_shop_loop_item','woocommerce_template_loop_product_link_open', 10 );
 remove_action( 'woocommerce_after_shop_loop_item','woocommerce_template_loop_product_link_close', 5 );
 remove_action( 'woocommerce_shop_loop_item_title', 'woocommerce_template_loop_product_title', 10 );
+remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5 );
 remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
 
 remove_action( 'woocommerce_before_single_product_summary', 'woocommerce_show_product_sale_flash', 10 );
@@ -107,3 +108,89 @@ function dots_template_loop_product_title() {
 	echo '<p class="product-name text-neutral-0 text-sm font-normal leading-6 h-12 mb-1">' . get_the_title() . '</p>';
 }
 add_filter( 'woocommerce_shop_loop_item_title', 'dots_template_loop_product_title', 100, 2 );
+
+// Add Custom Product Attribute Locations.
+function dots_product_attribute_location() {
+	global $product;
+
+	$attributes = $product->get_variation_attributes();
+
+	if ( ! empty( $attributes ) ) {
+	?>
+
+		<div class="bg-neutral-900 mt-4 mb-6 md:bg-transparent md:mb-0">
+			<div class="flex justify-between items-center pt-4 px-4 md:p-0">
+				<div class="text-primary-1 font-black">Stok Toko Offline</div>
+			</div>
+			<div class="text-neutral-200 body-text-2 px-4 mt-2 mb-4 md:text-sm md:px-0">Selain secara online, kamu juga bisa beli dari stok offline di toko kami:</div>
+			<div class="scroll-container-hide-scrollbar pl-4 pb-4 overflow-y-scroll md:pl-0 md:pb-4 md:overflow-visible">
+
+		<?php
+			foreach ( $attributes as $attribute_name => $options ) {
+				if ( $attribute_name == 'pa_kota' ) {
+					$no = 1;
+					$terms = wc_get_product_terms(
+						$product->get_id(),
+						'pa_kota',
+						array(
+							'fields' => 'all',
+						),
+					);
+
+					foreach ( $terms as $term ) {
+						if ( $no > 1 ) {
+							echo '<div class="slick-slider inline-flex md:block">';
+					?>
+						<div>
+							<a href="<?php echo esc_url( $term->description ); ?>" class="store-item-container store-item cursor-pointer bg-neutral-900 border-1 border-neutral-800 rounded-2 py-3 px-4 mr-2 md:border-0 md:mr-0" target="_blank" rel="noreferrer noopener">
+								<div class="store-name text-neutral-100 text-sm font-black tracking-wide leading-5"><?php echo $term->name; ?></div>
+								<div class="flex items-center mt-2">
+									<span class="badge bg-semantic-success-heavy rounded-6 text-neutral-100 text-xs font-bold leading-4 normal-case whitespace-nowrap inline-block py-0.5 px-2">Stok Tersedia</span>
+								</div>
+							</a>
+						</div>
+					<?php
+							echo '</div>';
+							echo '<script>
+								jQuery( function ( $ ) {
+									$( ".slick-slider" ).slick({
+										infinite: false,
+										slidesToShow: 2,
+										slidesToScroll: 2,
+									});
+								} );
+							</script>';
+						} else {
+					?>
+						<a href="<?php echo esc_url( $term->description ); ?>" class="store-item-container cursor-pointer bg-neutral-900 border-1 border-neutral-800 rounded-2 flex items-center justify-between py-3 px-4 mb-2 mr-4 md:border-0 md:mr-0" target="_blank" rel="noreferrer noopener">
+							<div class="text-neutral-100 text-sm font-black tracking-wide leading-5 w-8-12"><?php echo $term->name; ?></div>
+							<div class="block">
+								<span class="badge bg-semantic-success-heavy rounded-6 text-neutral-100 text-xs font-bold normal-case leading-4 whitespace-nowrap inline-block py-0.5 px-2">Stok tersedia</span>
+							</div>
+						</a>
+					<?php
+						}
+
+						$no++;
+					}
+				}
+			}
+		?>
+
+			</div>
+		</div>
+
+	<?php
+	}
+}
+add_filter( 'woocommerce_after_add_to_cart_form', 'dots_product_attribute_location' );
+
+// Override Product Tabs.
+function dots_product_tabs( $tabs ) {
+	$tabs[ 'description' ][ 'title' ] = 'Deskripsi';
+	unset( $tabs['additional_information'] );
+	unset( $tabs['reviews'] );
+
+	return $tabs;
+}
+add_filter( 'woocommerce_product_tabs', 'dots_product_tabs', 9999 );
