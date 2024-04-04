@@ -18,33 +18,33 @@ class Dots_Widget_Product_Categories extends WC_Widget {
 	// Constructor.
 	public function __construct() {
 		$this->widget_cssclass    = 'woocommerce widget_product_categories';
-		$this->widget_description = __( 'An accordion list of product categories and subcategories.', 'woocommerce' );
+		$this->widget_description = __( 'An accordion list of product categories and subcategories.', 'dots-elementor' );
 		$this->widget_id          = 'woocommerce_product_categories--accordion';
-		$this->widget_name        = __( 'DEA - Product Categories', 'woocommerce' );
+		$this->widget_name        = __( 'DEA - Product Categories', 'dots-elementor' );
 		$this->settings           = array(
 			'title'              => array(
 				'type'  => 'text',
-				'std'   => __( 'Categories', 'woocommerce' ),
-				'label' => __( 'Title', 'woocommerce' ),
+				'std'   => __( 'Categories', 'dots-elementor' ),
+				'label' => __( 'Title', 'dots-elementor' ),
 			),
 			'orderby'            => array(
 				'type'    => 'select',
 				'std'     => 'name',
-				'label'   => __( 'Order by', 'woocommerce' ),
+				'label'   => __( 'Order by', 'dots-elementor' ),
 				'options' => array(
-					'order' => __( 'Category order', 'woocommerce' ),
-					'name'  => __( 'Name', 'woocommerce' ),
+					'order' => __( 'Category order', 'dots-elementor' ),
+					'name'  => __( 'Name', 'dots-elementor' ),
 				),
 			),
 			'count'              => array(
 				'type'  => 'checkbox',
 				'std'   => 0,
-				'label' => __( 'Show product counts', 'woocommerce' ),
+				'label' => __( 'Show product counts', 'dots-elementor' ),
 			),
 			'hide_empty'         => array(
 				'type'  => 'checkbox',
 				'std'   => 0,
-				'label' => __( 'Hide empty categories', 'woocommerce' ),
+				'label' => __( 'Hide empty categories', 'dots-elementor' ),
 			),
 		);
 
@@ -109,7 +109,7 @@ class Dots_Widget_Product_Categories extends WC_Widget {
 		$list_args['walker']                     = new WC_Product_Cat_List_Walker();
 		$list_args['title_li']                   = '';
 		$list_args['pad_counts']                 = 1;
-		$list_args['show_option_none']           = __( 'No product categories exist.', 'woocommerce' );
+		$list_args['show_option_none']           = __( 'No product categories exist.', 'dots-elementor' );
 		$list_args['current_category']           = ( $this->current_cat ) ? $this->current_cat->term_id : '';
 		$list_args['current_category_ancestors'] = $this->cat_ancestors;
 

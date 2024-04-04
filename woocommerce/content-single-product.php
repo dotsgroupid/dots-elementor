@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The template for displaying product content in the single-product.php template.
  *
@@ -17,13 +18,15 @@ if ( post_password_required() ) {
 
 ?>
 
-	<div id="product-<?php the_ID(); ?>" <?php wc_product_class( 'font-roboto ', $product ); ?>>
+	<div id="product-<?php the_ID(); ?>" <?php wc_product_class( 'text-neutral-200 font-roboto ', $product ); ?>>
 
 		<?php do_action( 'woocommerce_before_single_product_summary' ); ?>
 
 		<div class="summary entry-summary">
 			<?php do_action( 'woocommerce_single_product_summary' ); ?>
 		</div>
+
+		<div class="summary-sep clear"></div>
 
 		<?php do_action( 'woocommerce_after_single_product_summary' ); ?>
 

@@ -98,7 +98,6 @@ function dots_elementor_scripts_styles() {
 	wp_enqueue_style( 'dots-tailwind-style', DOTS_THEME_URI . 'assets/css/tailwind.css', [], '2.2.4' );
 
 	wp_enqueue_style( 'dots-elementor-style', get_stylesheet_uri(), [], DOTS_THEME_VERSION );
-	wp_enqueue_style( 'dots-elementor-theme', DOTS_THEME_URI . 'assets/css/theme.css', [], DOTS_THEME_VERSION );
 
 	wp_enqueue_style( 'dots-slick-style', DOTS_THEME_URI . 'assets/css/slick.css', [], '1.8.1' );
 	wp_enqueue_script( 'dots-slick-script', DOTS_THEME_URI . 'assets/js/slick.js', array( 'jquery' ), '1.8.1', true );

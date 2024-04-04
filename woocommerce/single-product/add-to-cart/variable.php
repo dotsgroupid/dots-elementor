@@ -20,17 +20,13 @@ do_action( 'woocommerce_before_add_to_cart_form' );
 ?>
 
 	<form action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" class="variations_form cart" enctype='multipart/form-data' data-product_id="<?php echo absint( $product->get_id() ); ?>" data-product_variations="<?php echo $variations_attr; ?>">
-
 		<?php
 			do_action( 'woocommerce_before_variations_form' );
 
 			if ( empty( $available_variations ) && false !== $available_variations ) :
 		?>
-
-			<p class="stock out-of-stock"><?php echo esc_html( apply_filters( 'woocommerce_out_of_stock_message', __( 'This product is currently out of stock and unavailable.', 'woocommerce' ) ) ); ?></p>
-
+			<p class="stock out-of-stock"><?php echo esc_html( apply_filters( 'woocommerce_out_of_stock_message', __( 'This product is currently out of stock and unavailable.', 'dots-elementor' ) ) ); ?></p>
 		<?php else : ?>
-
 			<div class="variations">
 				<div>
 
@@ -73,13 +69,11 @@ do_action( 'woocommerce_before_add_to_cart_form' );
 				?>
 
 			</div>
-
 		<?php
 			endif;
 
 			do_action( 'woocommerce_after_variations_form' );
 		?>
-
 	</form>
 
 <?php
