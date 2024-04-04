@@ -33,9 +33,7 @@ global $product;
 
 			<?php echo wc_get_product_category_list( $product->get_id(), ', ', '<span class="text-neutral-300 text-sm">' . _n( 'Kategori:', 'Kategori:', count( $product->get_category_ids() ), 'dots-elementor' ) . ' ', '</span>' ); ?>
 
-			<div class="dot-sparated mx-2"></div>
-
-			<?php echo wc_get_product_tag_list( $product->get_id(), ', ', '<span class="text-neutral-300 text-sm">' . _n( 'Tag:', 'Tag:', count( $product->get_tag_ids() ), 'dots-elementor' ) . ' ', '</span>' ); ?>
+			<?php echo wc_get_product_tag_list( $product->get_id(), ', ', '<div class="dot-sparated mx-2"></div><span class="text-neutral-300 text-sm">' . _n( 'Kondisi:', 'Kondisi:', count( $product->get_tag_ids() ), 'dots-elementor' ) . ' ', '</span>' ); ?>
 
 			<?php do_action( 'woocommerce_product_meta_end' ); ?>
 

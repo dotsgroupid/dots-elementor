@@ -128,7 +128,6 @@ function dots_product_attribute_location() {
 		<?php
 			foreach ( $attributes as $attribute_name => $options ) {
 				if ( $attribute_name == 'pa_kota' ) {
-					$no = 1;
 					$terms = wc_get_product_terms(
 						$product->get_id(),
 						'pa_kota',
@@ -137,9 +136,12 @@ function dots_product_attribute_location() {
 						),
 					);
 
+					if ( count( $terms ) > 1 ) {
+						echo '<div class="slick-slider offline-slider inline-flex md:block">';
+					}
+
 					foreach ( $terms as $term ) {
-						if ( $no > 1 ) {
-							echo '<div class="slick-slider inline-flex md:block">';
+						if ( count( $terms ) > 1 ) {
 					?>
 						<div>
 							<a href="<?php echo esc_url( $term->description ); ?>" class="store-item-container store-item cursor-pointer bg-neutral-900 border-1 border-neutral-800 rounded-2 py-3 px-4 mr-2 md:border-0 md:mr-0" target="_blank" rel="noreferrer noopener">
@@ -150,16 +152,6 @@ function dots_product_attribute_location() {
 							</a>
 						</div>
 					<?php
-							echo '</div>';
-							echo '<script>
-								jQuery( function ( $ ) {
-									$( ".slick-slider" ).slick({
-										infinite: false,
-										slidesToShow: 2,
-										slidesToScroll: 2,
-									});
-								} );
-							</script>';
 						} else {
 					?>
 						<a href="<?php echo esc_url( $term->description ); ?>" class="store-item-container cursor-pointer bg-neutral-900 border-1 border-neutral-800 rounded-2 flex items-center justify-between py-3 px-4 mb-2 mr-4 md:border-0 md:mr-0" target="_blank" rel="noreferrer noopener">
@@ -170,9 +162,21 @@ function dots_product_attribute_location() {
 						</a>
 					<?php
 						}
-
-						$no++;
 					}
+
+					if ( count( $terms ) > 1 ) {
+						echo '</div>';
+						echo '<script>
+							jQuery( function ( $ ) {
+								$( ".slick-slider" ).slick({
+									infinite: false,
+									slidesToShow: 2,
+									slidesToScroll: 2,
+								});
+							} );
+						</script>';
+					}
+
 				}
 			}
 		?>
