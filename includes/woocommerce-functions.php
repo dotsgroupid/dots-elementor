@@ -19,13 +19,12 @@ remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_singl
 remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_price', 10 );
 remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_excerpt', 20 );
 remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
-remove_action( 'woocommerce_single_variation', 'woocommerce_single_variation', 10 );
 remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );
 
 add_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 10 );
 add_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_price', 20 );
 
-// Calculates discount percentages.
+// Add Calculates discount percentages.
 function dots_presentage_ribbon( $product ) {
 	if ( $product->is_type( 'simple' ) || $product->is_type( 'external' ) ) {
 		$regular_price = $product->get_regular_price();
@@ -63,30 +62,92 @@ function dots_presentage_ribbon( $product ) {
 	return str_replace( '{value}', $ribbon_content, '-{value}%' );
 }
 
-// Override Variable Price HTML Outputs.
-function dots_variable_price_html( $price, $product ){
-	global $woocommerce_loop;
+// Override Format the price with a currency symbol.
+function dots_price( $price, $args = array() ) {
+	$args = wp_parse_args(
+		$args,
+		array(
+			'ex_tax_label'       => false,
+			'currency'           => '',
+			'decimal_separator'  => wc_get_price_decimal_separator(),
+			'thousand_separator' => wc_get_price_thousand_separator(),
+			'decimals'           => wc_get_price_decimals(),
+			'price_format'       => get_woocommerce_price_format(),
+		)
+	);
 
-	if ( ( is_product() && isset($woocommerce_loop['name']) && ! empty($woocommerce_loop['name']) ) || ! is_product() ) {
-		if ( $product->is_on_sale() ) {
-			$regular_price_min = $product->get_variation_regular_price( 'min', true );
-			$active_price_min = $product->get_variation_price( 'min', true );
+	$original_price    = $price;
+	$price             = (float) $price;
+	$unformatted_price = $price;
+	$negative          = $price < 0;
 
-			$active_price_ins_html = sprintf( '<ins>%s</ins>', wc_price( $active_price_min ) );
-			$regular_price_del_html = sprintf( '<del>%s</del>', wc_price( $regular_price_min ) );
 
-			$price = sprintf( '%s %s', $active_price_ins_html, $regular_price_del_html );
-		} else {
-			$active_price_min = $product->get_variation_price( 'min', true );
-			$active_price_ins_html = sprintf( '<ins>%s</ins>', wc_price( $active_price_min ) );
+	$price = apply_filters( 'raw_woocommerce_price', $negative ? $price * -1 : $price, $original_price );
+	$price = apply_filters( 'formatted_woocommerce_price', number_format( $price, $args['decimals'], $args['decimal_separator'], $args['thousand_separator'] ), $price, $args['decimals'], $args['decimal_separator'], $args['thousand_separator'], $original_price );
 
-			$price = sprintf( '%s', $active_price_ins_html );
-		}
+	if ( apply_filters( 'woocommerce_price_trim_zeros', false ) && $args['decimals'] > 0 ) {
+		$price = wc_trim_zeros( $price );
 	}
 
-	return $price;
+	$formatted_price = ( $negative ? '-' : '' ) . sprintf( $args['price_format'], get_woocommerce_currency_symbol( $args['currency'] ), $price );
+	$return          = $formatted_price;
+
+	if ( $args['ex_tax_label'] && wc_tax_enabled() ) {
+		$return .= WC()->countries->ex_tax_or_vat();
+	}
+
+	return apply_filters( 'woocommerce_price', $return, $price, $args, $unformatted_price, $original_price );
 }
-add_filter( 'woocommerce_variable_price_html', 'dots_variable_price_html', 100, 2 );
+
+// Override Format a sale price for display.
+function dots_format_sale_price( $regular_price, $sale_price ) {
+	$price = '<div class="text-primary-1 text-sm font-black leading-6">' . $sale_price . '</div> <div class="text-neutral-600 text-xxs font-medium line-through" aria-hidden="true">' . $regular_price . '</div> ';
+	return apply_filters( 'woocommerce_format_sale_price', $price, $regular_price, $sale_price );
+}
+
+// Override Format a price range for display.
+function dots_format_min_prace_range( $from ) {
+	$price = is_numeric( $from ) ? dots_price( $from ) : $from;
+	return apply_filters( 'woocommerce_format_min_prace_range', $price, $from );
+}
+
+// Override Returns the price in html format.
+function dots_price_html( $product ) {
+	if ( $product->is_type( 'simple' ) ) {
+		if ( '' === $product->get_price() ) {
+			$price = apply_filters( 'woocommerce_empty_price_html', '', $product );
+		} elseif ( $product->is_on_sale() ) {
+			$price = dots_format_sale_price( wc_get_price_to_display( $product, array( 'price' => $product->get_regular_price() ) ), wc_get_price_to_display( $product ) ) . $product->get_price_suffix();
+		} else {
+			$price = '<div class="text-primary-1 text-sm font-black leading-6">' . dots_price( wc_get_price_to_display( $product ) ) . $product->get_price_suffix() . '</div>';
+		}
+	} elseif( $product->is_type( 'variable' ) ) {
+		$prices = $product->get_variation_prices( true );
+
+		if ( empty( $prices['price'] ) ) {
+			$price = apply_filters( 'woocommerce_variable_empty_price_html', '', $product );
+		} else {
+			$min_price     = current( $prices['price'] );
+			$max_price     = end( $prices['price'] );
+			$min_reg_price = current( $prices['regular_price'] );
+			$max_reg_price = end( $prices['regular_price'] );
+
+			if ( $min_price !== $max_price ) {
+				$price = '<div class="text-neutral-600 text-xxs font-medium" aria-hidden="true">Mulai dari</div> <div class="text-primary-1 text-sm font-black leading-6">' . dots_format_min_prace_range( $min_price ) . '</div>';
+			} elseif ( $product->is_on_sale() && $min_reg_price === $max_reg_price ) {
+				$price = dots_format_sale_price( dots_price( $max_reg_price ), dots_price( $min_price ) );
+			} else {
+				$price = '<div class="text-primary-1 text-sm font-black leading-6">' . dots_price( $min_price ) . '</div>';
+			}
+
+			$price = apply_filters( 'woocommerce_variable_price_html', $price . $product->get_price_suffix(), $product );
+		}
+ 	} else {
+		$price = '';
+	}
+
+	return apply_filters( 'woocommerce_get_price_html', $price, $product );
+}
 
 // Override Product Loop Link.
 function dots_template_loop_product_link_open() {
@@ -108,86 +169,6 @@ function dots_template_loop_product_title() {
 	echo '<p class="product-name text-neutral-0 text-sm font-normal leading-6 h-12 mb-1">' . get_the_title() . '</p>';
 }
 add_filter( 'woocommerce_shop_loop_item_title', 'dots_template_loop_product_title', 100, 2 );
-
-// Add Custom Product Attribute Locations.
-function dots_product_attribute_location() {
-	global $product;
-
-	$attributes = $product->get_variation_attributes();
-
-	if ( ! empty( $attributes ) ) {
-	?>
-
-		<div class="bg-neutral-900 mt-4 mb-6 md:bg-transparent md:mb-0">
-			<div class="flex justify-between items-center pt-4 px-4 md:p-0">
-				<div class="text-primary-1 font-black">Stok Toko Offline</div>
-			</div>
-			<div class="text-neutral-200 body-text-2 px-4 mt-2 mb-4 md:text-sm md:px-0">Selain secara online, kamu juga bisa beli dari stok offline di toko kami:</div>
-			<div class="scroll-container-hide-scrollbar pl-4 pb-4 overflow-y-scroll md:pl-0 md:pb-4 md:overflow-visible">
-
-		<?php
-			foreach ( $attributes as $attribute_name => $options ) {
-				if ( $attribute_name == 'pa_kota' ) {
-					$terms = wc_get_product_terms(
-						$product->get_id(),
-						'pa_kota',
-						array(
-							'fields' => 'all',
-						),
-					);
-
-					if ( count( $terms ) > 1 ) {
-						echo '<div class="slick-slider offline-slider inline-flex md:block">';
-					}
-
-					foreach ( $terms as $term ) {
-						if ( count( $terms ) > 1 ) {
-					?>
-						<div>
-							<a href="<?php echo esc_url( $term->description ); ?>" class="store-item-container store-item cursor-pointer bg-neutral-900 border-1 border-neutral-800 rounded-2 py-3 px-4 mr-2 md:border-0 md:mr-0" target="_blank" rel="noreferrer noopener">
-								<div class="store-name text-neutral-100 text-sm font-black tracking-wide leading-5"><?php echo $term->name; ?></div>
-								<div class="flex items-center mt-2">
-									<span class="badge bg-semantic-success-heavy rounded-6 text-neutral-100 text-xs font-bold leading-4 normal-case whitespace-nowrap inline-block py-0.5 px-2">Stok Tersedia</span>
-								</div>
-							</a>
-						</div>
-					<?php
-						} else {
-					?>
-						<a href="<?php echo esc_url( $term->description ); ?>" class="store-item-container cursor-pointer bg-neutral-900 border-1 border-neutral-800 rounded-2 flex items-center justify-between py-3 px-4 mb-2 mr-4 md:border-0 md:mr-0" target="_blank" rel="noreferrer noopener">
-							<div class="text-neutral-100 text-sm font-black tracking-wide leading-5 w-8-12"><?php echo $term->name; ?></div>
-							<div class="block">
-								<span class="badge bg-semantic-success-heavy rounded-6 text-neutral-100 text-xs font-bold normal-case leading-4 whitespace-nowrap inline-block py-0.5 px-2">Stok tersedia</span>
-							</div>
-						</a>
-					<?php
-						}
-					}
-
-					if ( count( $terms ) > 1 ) {
-						echo '</div>';
-						echo '<script>
-							jQuery( function ( $ ) {
-								$( ".slick-slider" ).slick({
-									infinite: false,
-									slidesToShow: 2,
-									slidesToScroll: 2,
-								});
-							} );
-						</script>';
-					}
-
-				}
-			}
-		?>
-
-			</div>
-		</div>
-
-	<?php
-	}
-}
-add_filter( 'woocommerce_after_add_to_cart_form', 'dots_product_attribute_location' );
 
 // Override Product Tabs.
 function dots_product_tabs( $tabs ) {

@@ -9,6 +9,6 @@
 
 global $product;
 
-if ( $price_html = $product->get_price_html() ) :
+if ( $price_html = dots_price_html( $product ) ) :
 	echo $price_html;
 endif;

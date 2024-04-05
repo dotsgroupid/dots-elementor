@@ -30,11 +30,8 @@ do_action( 'woocommerce_before_add_to_cart_form' );
 			<div class="variations">
 				<div>
 
-					<?php
-						foreach ( $attributes as $attribute_name => $options ) {
-							if ($attribute_name == 'pa_warna') {
-					?>
-						<div class="text-neutral-100 body-text-3 pt-2 px-4 mt-4 mb-3 md:px-0">Warna:</div>
+					<?php foreach ( $attributes as $attribute_name => $options ) : ?>
+						<div class="text-neutral-100 body-text-3 pt-2 px-4 mt-4 mb-3 md:px-0"><?php echo wc_attribute_label( $attribute_name ); ?>:</div>
 						<div class="flex w-full pb-2 overflow-x-auto overflow-y-hidden scroll-container-hide-scrollbar">
 							<div class="flex gap-2 mx-4 md:flex-wrap md:mx-0">
 								<?php
@@ -48,17 +45,14 @@ do_action( 'woocommerce_before_add_to_cart_form' );
 								?>
 							</div>
 						</div>
-					<?php
-							}
-						}
-					?>
+					<?php endforeach; ?>
 
 				</div>
 			</div>
 
 			<?php do_action( 'woocommerce_after_variations_table' ); ?>
 
-			<div class="border-b-1 border-neutral-900 my-4">
+			<div class="my-4">
 
 				<?php
 					do_action( 'woocommerce_before_single_variation' );
