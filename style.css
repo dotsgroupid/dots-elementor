@@ -45,6 +45,10 @@
 	text-transform: none;
 }
 
+.di-chevron-left:before {
+	content: "\e94a";
+}
+
 .di-chevron-right:before {
 	content: "\e94b";
 }
@@ -57,8 +61,20 @@
 	content: "\e93e";
 }
 
+.di-instagram:before {
+	content: "\e93f";
+}
+
+.di-mail:before {
+	content: "\e928";
+}
+
 .di-minus:before {
 	content: "\e951";
+}
+
+.di-phone:before {
+	content: "\e92e";
 }
 
 .di-plus:before {
@@ -69,12 +85,20 @@
 	content: "\e937";
 }
 
+.di-tiktok:before {
+	content: "\e940";
+}
+
 .di-twitter:before {
 	content: "\e967";
 }
 
 .di-whatsapp:before {
 	content: "\e942";
+}
+
+.di-youtube:before {
+	content: "\e943";
 }
 
 /*
@@ -313,6 +337,11 @@ body {
 
 .container {
 	width: 100%;
+}
+
+.flex-basis-full {
+	-ms-flex-preferred-size: 100%;
+	flex-basis: 100%;
 }
 
 .w-9 {
@@ -737,6 +766,54 @@ body {
 .pdp-description ul li {
 	list-style-position: outside;
 	margin-left: 1rem;
+}
+
+/*
+ * Paginations
+ */
+.dots-pagination {
+	margin-top: 3rem;
+	margin-bottom: 3rem;
+}
+
+.dots-pagination ul {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 1.5rem;
+}
+
+.dots-pagination ul li span.current,
+.dots-pagination ul li a {
+	cursor: pointer;
+	border-radius: 50%;
+	color: #9e9e9e;
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.25rem;
+	height: 2.25rem;
+	padding: 0.5rem;
+	margin-left: 0.25rem;
+	margin-right: 0.25rem;
+}
+
+.dots-pagination ul li a.prev,
+.dots-pagination ul li a.next {
+	font-size: 1.5rem;
+	line-height: 2rem;
+}
+
+.dots-pagination ul li span.current {
+	pointer-events: none;
+	color: #000000;
+	background-color: #f68522;
+}
+
+.dots-pagination ul li a:hover {
+	background-color: #616161;
 }
 
 /*
