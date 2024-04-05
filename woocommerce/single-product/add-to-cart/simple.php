@@ -40,8 +40,7 @@ if ( $product->is_in_stock() ) :
 				?>
 
 				<div class="flex mt-2 md:mt-6">
-					<button id="btn-add-to-cart" class="btn btn-ghost bg-transparent border-1 border-solid border-primary-1 rounded text-primary-1 text-sm font-bold relative w-full mr-2 overflow-hidden md:mr-4">+ Keranjang</button>
-					<button id="btn-buy-now" class="btn btn-filled bg-primary-1 rounded text-neutral-1000 text-sm font-bold relative w-full overflow-hidden">Beli Sekarang</button>
+					<a href="javascript:void(0)" class="btn btn-filled bg-primary-1 rounded text-neutral-1000 text-sm font-bold text-center relative w-full overflow-hidden">Beli Sekarang</a>
 				</div>
 
 				<?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>

@@ -22,8 +22,7 @@ global $product;
 		?>
 
 		<div class="flex mt-2 md:mt-6">
-			<button id="btn-add-to-cart" class="btn btn-ghost bg-transparent border-1 border-solid border-primary-1 rounded text-primary-1 text-sm font-bold relative w-full mr-2 overflow-hidden md:mr-4">+ Keranjang</button>
-			<button id="btn-buy-now" class="btn btn-filled bg-primary-1 rounded text-neutral-1000 text-sm font-bold relative w-full overflow-hidden">Beli Sekarang</button>
+			<a href="javascript:void(0)" class="btn btn-filled bg-primary-1 rounded text-neutral-1000 text-sm font-bold text-center relative w-full overflow-hidden">Beli Sekarang</a>
 		</div>
 
 		<input type="hidden" name="add-to-cart" value="<?php echo absint( $product->get_id() ); ?>" />
