@@ -29,6 +29,16 @@ class DEA_Brand_Carousel extends elementorModules.frontend.handlers.Base {
 			infinite: 'yes' === elementSettings.infinite,
 			speed: elementSettings.speed,
 			slidesToShow: slidesToShow,
+			responsive: [
+				{
+					breakpoint: 480,
+					settings: {
+						arrows: false,
+						slidesToShow: 4,
+						slidesToScroll: 4,
+					},
+				},
+			],
 		}
 
 		if ( 'yes' === elementSettings.autoplay ) {

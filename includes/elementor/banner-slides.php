@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Custom Widgets Elementor for Slider Post Types.
+ * Custom Widgets Elementor for Slider Images.
  *
  * @package DOTS. Elementor
  * @since 1.0
