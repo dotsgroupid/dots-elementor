@@ -1,6 +1,47 @@
 jQuery( function ( $ ) {
 	"use strict";
 
+	$( '.product-list-filter' ).on( 'keyup', '.text-input input', function (e) {
+		var valid = false;
+
+		if ( typeof e.which == 'undefined' ) {
+			valid = true;
+		} else if ( typeof e.which == 'number' && e.which > 0 ) {
+			valid = ! e.ctrlKey && ! e.metaKey && ! e.altKey;
+		}
+
+		if ( ! valid ) {
+			return;
+		}
+
+		var val = $( this ).val();
+
+		if ( typeof val === 'number' ) {
+			val = '' + val;
+		}
+
+		var filter = val.toUpperCase(),
+			widget = $(this).closest( '.product-list-filter' ),
+			ul = widget.find( 'ul' ),
+			items = ul.children( '.filter-list-checkbox' );
+
+		items.each(function () {
+			var a = $(this).find( 'a' ).data( 'title' );
+
+			if (typeof a === 'number') {
+				a = '' + a;
+			}
+
+			a = a.toUpperCase();
+
+			if ( a.indexOf( filter ) > -1 ) {
+				$( this ).show();
+			} else {
+				$( this ).hide();
+			}
+		});
+	} );
+
 	/**
      * Change product quantity
      */
