@@ -121,7 +121,13 @@ function dots_price_html( $product ) {
 		} else {
 			$price = '<div class="text-primary-1 text-sm font-black leading-6">' . dots_price( wc_get_price_to_display( $product ) ) . $product->get_price_suffix() . '</div>';
 		}
-	} elseif( $product->is_type( 'variable' ) ) {
+	} elseif ( $product->is_type( 'external' ) ) {
+		if ( $product->is_on_sale() ) {
+			$price = '<div class="text-neutral-600 text-xxs font-medium" aria-hidden="true">Mulai dari</div> <div class="text-primary-1 text-sm font-black leading-6">' . dots_price( $product->get_sale_price() ) . '</div>';
+		} else {
+			$price = '<div class="text-neutral-600 text-xxs font-medium" aria-hidden="true">Mulai dari</div> <div class="text-primary-1 text-sm font-black leading-6">' . dots_price( $product->get_regular_price() ) . '</div>';
+		}
+	} elseif ( $product->is_type( 'variable' ) ) {
 		$prices = $product->get_variation_prices( true );
 
 		if ( empty( $prices['price'] ) ) {
@@ -153,7 +159,11 @@ function dots_price_html( $product ) {
 function dots_template_loop_product_link_open() {
 	global $product;
 
-	$link = apply_filters( 'woocommerce_loop_product_link', get_the_permalink(), $product );
+	if ( $product->is_type( 'external' ) ) {
+		$link = apply_filters( 'woocommerce_loop_product_link', $product->get_product_url(), $product );
+	} else {
+		$link = apply_filters( 'woocommerce_loop_product_link', get_the_permalink(), $product );
+	}
 
 	echo '<div class="bg-neutral-900 rounded-2 relative h-full"><a href="' . esc_url( $link ) . '">';
 }
