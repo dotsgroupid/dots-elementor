@@ -145,7 +145,7 @@ class Dots_Widget_Product_Categories extends WC_Widget {
 						<?php echo $term_current_icon; ?>
 						<div id="content-items" class="flex items-center ml-2">
 							<figure class="h-auto mr-2">
-								<img src="https://assets.jamtangan.com/icon-category/all.png">
+								<img src="<?php echo DOTS_THEME_URI . 'assets/images/i-category.png'; ?>">
 							</figure>
 							<p <?php echo $term_current_class; ?>><?php echo $category->name; ?></p>
 						</div>
