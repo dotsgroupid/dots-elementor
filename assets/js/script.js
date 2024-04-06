@@ -1,6 +1,9 @@
 jQuery( function ( $ ) {
 	"use strict";
 
+	/**
+     * Product brands filters
+     */
 	$( '.product-list-filter' ).on( 'keyup', '.text-input input', function (e) {
 		var valid = false;
 
