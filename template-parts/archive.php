@@ -4,21 +4,18 @@
  * The template for displaying archive pages.
  *
  * @package DOTS. Elementor
- * @since 1.0
+ * @since 1.1.0
  */
 
 ?>
 
 <main id="content" class="site-main">
-
-	<?php if ( apply_filters( 'dots_elementor_page_title', true ) ) : ?>
-		<header class="page-header">
-			<?php
-				the_archive_title( '<h1 class="entry-title">', '</h1>' );
-				the_archive_description( '<p class="archive-description">', '</p>' );
-			?>
-		</header>
-	<?php endif; ?>
+	<header class="page-header">
+		<?php
+			the_archive_title( '<h1 class="entry-title">', '</h1>' );
+			the_archive_description( '<p class="archive-description">', '</p>' );
+		?>
+	</header>
 
 	<div class="page-content">
 		<?php
@@ -53,5 +50,4 @@
 			<div class="nav-next"><?php previous_posts_link( sprintf( __( 'newer %s', 'dots-elementor' ), '<span class="meta-nav">&rarr;</span>' ) ); ?></div>
 		</nav>
 	<?php endif; ?>
-
 </main>

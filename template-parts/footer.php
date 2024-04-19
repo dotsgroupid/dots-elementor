@@ -4,23 +4,25 @@
  * The template for displaying footer.
  *
  * @package DOTS. Elementor
- * @since 1.0
+ * @since 1.1.0
  */
-
-$footer_nav_menu = wp_nav_menu( [
-	'theme_location' => 'menu-2',
-	'fallback_cb' => false,
-	'echo' => false,
-] );
 
 ?>
 
-<footer id="site-footer" class="site-footer">
-
-	<?php if ( $footer_nav_menu ) : ?>
-		<nav class="site-navigation">
-			<?php echo $footer_nav_menu; ?>
-		</nav>
-	<?php endif; ?>
-
+<footer id="site-footer" class="site-footer dynamic-footer footer-has-copyright">
+	<div class="footer-inner">
+		<div class="site-branding show-title">
+			<h4 class="site-title show">
+				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr__( 'Home', 'dots-elementor' ); ?>">
+					<?php echo esc_html( get_bloginfo( 'name' ) ); ?>
+				</a>
+			</h4>
+			<p class="site-description show">
+				<?php echo esc_html( get_bloginfo( 'description', 'display' ) ); ?>
+			</p>
+		</div>
+		<div class="copyright show">
+			<p>All rights reserved</p>
+		</div>
+	</div>
 </footer>
