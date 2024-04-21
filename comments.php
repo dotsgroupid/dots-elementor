@@ -21,58 +21,58 @@ if ( comments_open() && get_option( 'thread_comments' ) ) {
 
 ?>
 
-	<section id="comments" class="comments-area">
+<section id="comments" class="comments-area">
 
-		<?php if ( have_comments() ) : ?>
-			<h3 class="title-comments">
-				<?php
-					$comments_number = get_comments_number();
+	<?php if ( have_comments() ) : ?>
+		<h3 class="title-comments">
+			<?php
+				$comments_number = get_comments_number();
 
-					if ( '1' === $comments_number ) {
-						printf( esc_html_x( 'One Response', 'comments title', 'dots-elementor' ) );
-					} else {
-						printf(
-							esc_html(
-								_nx(
-									'%1$s Response',
-									'%1$s Responses',
-									$comments_number,
-									'comments title',
-									'hello-elementor'
-								)
-							),
-							esc_html( number_format_i18n( $comments_number ) )
-						);
-					}
-				?>
-			</h3>
-
-			<?php the_comments_navigation(); ?>
-
-			<ol class="comment-list">
-				<?php
-					wp_list_comments(
-						[
-							'style'       => 'ol',
-							'short_ping'  => true,
-							'avatar_size' => 42,
-						],
+				if ( '1' === $comments_number ) {
+					printf( esc_html_x( 'One Response', 'comments title', 'dots-elementor' ) );
+				} else {
+					printf(
+						esc_html(
+							_nx(
+								'%1$s Response',
+								'%1$s Responses',
+								$comments_number,
+								'comments title',
+								'hello-elementor'
+							)
+						),
+						esc_html( number_format_i18n( $comments_number ) )
 					);
-				?>
-			</ol>
+				}
+			?>
+		</h3>
 
-	<?php
-			the_comments_navigation();
+		<?php the_comments_navigation(); ?>
 
-		endif;
+		<ol class="comment-list">
+			<?php
+				wp_list_comments(
+					[
+						'style'       => 'ol',
+						'short_ping'  => true,
+						'avatar_size' => 42,
+					],
+				);
+			?>
+		</ol>
 
-	comment_form(
-		[
-			'title_reply_before' => '<h2 id="reply-title" class="comment-reply-title">',
-			'title_reply_after'  => '</h2>',
-		],
-	);
+<?php
+		the_comments_navigation();
 
-	?>
+	endif;
 
-	</section>
+comment_form(
+	[
+		'title_reply_before' => '<h2 id="reply-title" class="comment-reply-title">',
+		'title_reply_after'  => '</h2>',
+	],
+);
+
+?>
+
+</section>
